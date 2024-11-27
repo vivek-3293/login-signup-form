@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      setUser({ email: "user@example.com" }); // Example user
+      setUser({ email: "user@example.com" }); 
     }
   }, []);
 
