@@ -16,8 +16,22 @@ const Signup = () => {
 
 
   const handleChange = (e) =>{
+ 
+    
     const { name, value} = e.target;
     setFormData({ ...formData, [name]: value });
+    if(!formData.name){
+      setMessage("Name is Required.");
+      return;
+    }
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)){
+      setMessage("Please enter a valid email.");
+      return;
+    }
+    if (formData.password.length < 8 ){
+      setMessage("Password must be at least 8 characters long.");
+      return;
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -26,6 +40,9 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    
+
     try {
       const response = await axios.post("http://192.168.1.68:3030/auth/register", formData);
       setMessage(`Registration successful! ${response.data.name}`);
@@ -50,7 +67,7 @@ const Signup = () => {
               value={formData.name}
               onChange={handleChange}
               
-              required
+              
             />
             <input
               type="email"
@@ -59,7 +76,7 @@ const Signup = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              required
+              
             />
             <input
               type={passwordVisible ? "text" : "password"}
@@ -68,11 +85,10 @@ const Signup = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              required
+              
             />
             <span
-              className="position-absulate"
-              style={{ top: "40px", right: "10px", cursor: "pointer" }}
+              className="pass-icon-signup position-absulate"               
               onClick={togglePasswordVisibility}
             >
               {passwordVisible ? <FaEyeSlash /> : <FaEye />}

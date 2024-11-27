@@ -17,7 +17,7 @@ const Login = () => {
     setPasswordVisible((prev) => !prev);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => { 
     e.preventDefault();
     try {
       const response = await axios.post("http://192.168.1.68:3030/auth/login", {
@@ -55,8 +55,7 @@ const Login = () => {
               required
             />
             <span
-              className="position-absulate"
-              style={{ top: "40px", right: "10px", cursor: "pointer" }}
+              className="pass-icon position-absulate"
               onClick={togglePasswordVisibility}
             >
               {passwordVisible ? <FaEyeSlash /> : <FaEye />}

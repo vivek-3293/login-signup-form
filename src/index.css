@@ -9,3 +9,18 @@ body {
   max-width: 400px;
   background-color: #f8f9fa;
 }
+
+.pass-icon{
+  position: absolute;
+  top: 25%;
+  right: 12%;
+  transform: translateY(10%);
+  cursor: pointer;
+}
+.pass-icon-signup{
+  position: absolute;
+  top: 33%;
+  right: 12%;
+  transform: translateY(35%);
+  cursor: pointer;
+}
