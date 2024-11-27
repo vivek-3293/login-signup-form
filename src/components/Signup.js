@@ -1,21 +1,38 @@
 import React, { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [message, setMessage] = useState("");
-  const { signup } = useContext(AuthContext);
   const navigate = useNavigate();
+
+
+  const handleChange = (e) =>{
+    const { name, value} = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signup(formData);
-      setMessage("Registration successful!");
+      const response = await axios.post("http://192.168.1.68:3030/auth/register", formData);
+      setMessage(`Registration successful! ${response.data.name}`);
+      toast.success("Registration successful")
       navigate("/");
     } catch (error) {
-      setMessage(error);
+      setMessage(error.response?.data?.error || "Registration failed. Please try again.");
     }
   };
 
@@ -31,7 +48,8 @@ const Signup = () => {
               placeholder="Name"
               name="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={handleChange}
+              
               required
             />
             <input
@@ -40,18 +58,26 @@ const Signup = () => {
               placeholder="Email"
               name="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={handleChange}
               required
             />
             <input
-              type="password"
+              type={passwordVisible ? "text" : "password"}
               className="form-control my-3"
               placeholder="Password"
               name="password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={handleChange}
               required
             />
+            <span
+              className="position-absulate"
+              style={{ top: "40px", right: "10px", cursor: "pointer" }}
+              onClick={togglePasswordVisibility}
+            >
+              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+            </span>
+
             <button type="submit" className="btn btn-primary w-100">
               Sign Up
             </button>

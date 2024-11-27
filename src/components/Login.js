@@ -2,23 +2,33 @@ import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await login(email, password);
-    if (success) {
+    try {
+      const response = await axios.post("http://192.168.1.68:3030/auth/login", {
+        email,
+        password,
+      });
+      login(response.data.accessToken);
       toast.success("Login Successful");
       navigate("/home");
-    } else {
-      setError("Invalid credentials");
-      toast.error("Failed to login.");
+    } catch (error) {
+      toast.error("Invalid email or password.");
     }
   };
 
@@ -37,13 +47,20 @@ const Login = () => {
               required
             />
             <input
-              type="password"
+              type={passwordVisible ? "text" : "password"}
               className="form-control my-3"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <span
+              className="position-absulate"
+              style={{ top: "40px", right: "10px", cursor: "pointer" }}
+              onClick={togglePasswordVisibility}
+            >
+              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+            </span>
             <button type="submit" className="btn btn-primary w-100">
               Login
             </button>
