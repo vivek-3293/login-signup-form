@@ -24,9 +24,7 @@ export const AuthProvider = ({ children }) => {
   // Refresh Token Function
   const refreshToken = async () => {
     try {
-      const response = await axios.post(
-        "http://192.168.1.68:3030/auth/refresh"
-      );
+      const response = await axios.post("http://192.168.1.9:3030/auth/refresh");
       if (response.data && response.data.token) {
         const newToken = response.data.token;
         login(newToken);

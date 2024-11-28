@@ -12,26 +12,44 @@ const Signup = () => {
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  const validateForm = (name, value) => {
+    let errors = "";
+    if (name === "name") {
+      if (!value.trim()) {
+        errors = "Name is Requred.";
+      } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+        errors = "Name should be in letters only.";
+      }
+    }
 
-  const handleChange = (e) =>{
- 
-    
-    const { name, value} = e.target;
+    if (name === "email") {
+      if (!value) {
+        errors = "Email is Requred.";
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        errors = "Enter Valid Email.";
+      }
+    }
+
+    if (name === "password") {
+      if (!value) {
+        errors = "Passwor is Requred";
+      } else if (formData.password.length < 6) {
+        errors = "Password must be at least 6 characters long.";
+      }
+    }
+
+    return errors;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if(!formData.name){
-      setMessage("Name is Required.");
-      return;
-    }
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)){
-      setMessage("Please enter a valid email.");
-      return;
-    }
-    if (formData.password.length < 8 ){
-      setMessage("Password must be at least 8 characters long.");
-      return;
-    }
+
+    const formError = validateForm(name, value);
+    setErrors({ ...errors, [name]: formError });
   };
 
   const togglePasswordVisibility = () => {
@@ -40,16 +58,33 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    
+
+    const nameError = validateForm("name", formData.name);
+    const emailError = validateForm("email", formData.email);
+    const passwordError = validateForm("password", formData.password);
+
+    const allErrors = {
+      name: nameError,
+      email: emailError,
+      password: passwordError,
+    };
+
+    setErrors(allErrors);
+
+    if (Object.values(allErrors).some((error) => error)) return;
 
     try {
-      const response = await axios.post("http://192.168.1.68:3030/auth/register", formData);
+      const response = await axios.post(
+        "http://192.168.1.9:3030/auth/register",
+        formData
+      );
       setMessage(`Registration successful! ${response.data.name}`);
-      toast.success("Registration successful")
+      toast.success("Registration successful");
       navigate("/");
     } catch (error) {
-      setMessage(error.response?.data?.error || "Registration failed. Please try again.");
+      setMessage(
+        error.response?.data?.error || "Registration failed. Please try again."
+      );
     }
   };
 
@@ -66,9 +101,9 @@ const Signup = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              
-              
+              required
             />
+            {errors.name && <p className="text-danger">{errors.name}</p>}
             <input
               type="email"
               className="form-control my-3"
@@ -76,23 +111,29 @@ const Signup = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              
+              required
             />
-            <input
-              type={passwordVisible ? "text" : "password"}
-              className="form-control my-3"
-              placeholder="Password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              
-            />
-            <span
-              className="pass-icon-signup position-absulate"               
-              onClick={togglePasswordVisibility}
-            >
-              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-            </span>
+            {errors.email && <p className="text-danger">{errors.email}</p>}
+            <div className="position-relative">
+              <input
+                type={passwordVisible ? "text" : "password"}
+                className="form-control my-3"
+                placeholder="Password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <span
+                className="pass-icon-signup position-absulate"
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+            {errors.password && (
+              <p className="text-danger">{errors.password}</p>
+            )}
 
             <button type="submit" className="btn btn-primary w-100">
               Sign Up

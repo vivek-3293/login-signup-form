@@ -12,15 +12,13 @@ body {
 
 .pass-icon{
   position: absolute;
-  top: 25%;
-  right: 12%;
-  transform: translateY(10%);
+  top: 12%;
+  right: 2%;
   cursor: pointer;
 }
 .pass-icon-signup{
   position: absolute;
-  top: 33%;
-  right: 12%;
-  transform: translateY(35%);
+  top: 12%;
+  right: 2%;
   cursor: pointer;
 }

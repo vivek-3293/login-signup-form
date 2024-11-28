@@ -9,18 +9,48 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const validateForm = (name, value) => {
+    let error = "";
+    if (name === "email") {
+      if (!value) {
+        error = "Email is Requred.";
+      } else if (!/\S+@\S+\.\S+/.test(value)) {
+        error = "Enter Valid Email.";
+      }
+    }
+
+    if (name === "password") {
+      if (!value) {
+        error = "Passwor is Requred";
+      } else if (value.length < 6) {
+        error = "Password must be at least 6 characters long.";
+      }
+    }
+
+    return error;
+  };
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
 
-  const handleSubmit = async (e) => { 
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const emailError = validateForm("email", email);
+    const passwordError = validateForm("password", password);
+
+    if (emailError || passwordError) {
+      setErrors({ email: emailError, password: passwordError });
+      return;
+    }
+
     try {
-      const response = await axios.post("http://192.168.1.68:3030/auth/login", {
+      const response = await axios.post("http://192.168.1.9:3030/auth/login", {
         email,
         password,
       });
@@ -28,6 +58,7 @@ const Login = () => {
       toast.success("Login Successful");
       navigate("/home");
     } catch (error) {
+      console.log(error);
       toast.error("Invalid email or password.");
     }
   };
@@ -43,23 +74,43 @@ const Login = () => {
               className="form-control my-3"
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors((prev) => ({
+                  ...prev,
+                  email: validateForm("email", e.target.value),
+                }));
+              }}
               required
             />
-            <input
-              type={passwordVisible ? "text" : "password"}
-              className="form-control my-3"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <span
-              className="pass-icon position-absulate"
-              onClick={togglePasswordVisibility}
-            >
-              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-            </span>
+            {errors.email && <p className="text-danger">{errors.email}</p>}
+            <div className="position-relative">
+              <input
+                type={passwordVisible ? "text" : "password"}
+                className="form-control my-3"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrors((prev) => ({
+                    ...prev,
+                    password: validateForm("password", e.target.value),
+                  }));
+                }}
+                required
+              />
+
+              <span
+                className="pass-icon position-absulate"
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+            {errors.password && (
+              <p className="text-danger">{errors.password}</p>
+            )}
+
             <button type="submit" className="btn btn-primary w-100">
               Login
             </button>
@@ -67,7 +118,6 @@ const Login = () => {
           <p className="text-center mt-3">
             Don't have an account? <Link to="/signup">Sign Up</Link>
           </p>
-          {error && <p className="text-danger text-center">{error}</p>}
         </div>
       </div>
     </div>
