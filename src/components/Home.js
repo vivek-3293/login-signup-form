@@ -1,14 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext} from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BiUserCircle } from "react-icons/bi";
 
 const Home = () => {
   const { auth, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -35,26 +33,10 @@ const Home = () => {
   return (
     <div className="container text-center mt-5">
       <h1>Welcome to Home Page</h1>
-      <div className="profile-container position-relative">
-        <button
-          className="btn btn-light border rounded-circle"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          <BiUserCircle />
-        </button>
 
-        {isMenuOpen && (
-          <div
-            className="position-absolute end-0 bg-light border rounded p-3"
-            style={{ width: "200px" }}
-          >
-            <p className="mb-2">Welcome, {auth?.user?.name || "User"}</p>
-            <button className="btn btn-danger mt-3" onClick={handleLogout}>
-              Logout
-            </button>
-          </div>
-        )}
-      </div>
+      <button className="btn btn-danger mt-3" onClick={handleLogout}>
+        Logout
+      </button>
     </div>
   );
 };

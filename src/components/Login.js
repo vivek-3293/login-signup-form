@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,8 +10,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errors, setErrors] = useState({});
-  const { login } = useContext(AuthContext);
+  const { auth, login } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (auth.token){
+      navigate("/home");
+    }
+  }, [auth.token, navigate]);
+  
 
   const validateForm = (name, value) => {
     let error = "";
@@ -32,6 +39,12 @@ const Login = () => {
     }
 
     return error;
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    const errors = validateForm(name, value);
+    setErrors((prev) => ({ ...prev, [name]: errors }));
   };
 
   const togglePasswordVisibility = () => {
@@ -74,13 +87,9 @@ const Login = () => {
               className="form-control my-3"
               placeholder="Email"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setErrors((prev) => ({
-                  ...prev,
-                  email: validateForm("email", e.target.value),
-                }));
-              }}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={handleBlur}
+              name="email"
               required
             />
             {errors.email && <p className="text-danger">{errors.email}</p>}
@@ -90,13 +99,9 @@ const Login = () => {
                 className="form-control my-3"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setErrors((prev) => ({
-                    ...prev,
-                    password: validateForm("password", e.target.value),
-                  }));
-                }}
+                onChange={ (e) => setPassword(e.target.value)}
+                onBlur={handleBlur}
+                name="password"
                 required
               />
 

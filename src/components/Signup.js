@@ -1,8 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +14,15 @@ const Signup = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (auth.token){
+      navigate("/home");
+    }
+  }, [auth.token, navigate]);
+  
 
   const validateForm = (name, value) => {
     let errors = "";
@@ -44,12 +53,15 @@ const Signup = () => {
     return errors;
   };
 
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    const errors = validateForm(name, value);
+    setErrors((prev) => ({ ...prev, [name]: errors }));
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
-    const formError = validateForm(name, value);
-    setErrors({ ...errors, [name]: formError });
   };
 
   const togglePasswordVisibility = () => {
@@ -72,6 +84,7 @@ const Signup = () => {
     setErrors(allErrors);
 
     if (Object.values(allErrors).some((error) => error)) return;
+    
 
     try {
       const response = await axios.post(
@@ -101,6 +114,7 @@ const Signup = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
             />
             {errors.name && <p className="text-danger">{errors.name}</p>}
@@ -111,6 +125,7 @@ const Signup = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               required
             />
             {errors.email && <p className="text-danger">{errors.email}</p>}
@@ -122,6 +137,7 @@ const Signup = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 required
               />
               <span
