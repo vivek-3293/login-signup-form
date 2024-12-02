@@ -11,7 +11,7 @@ const Home = () => {
   const handleLogout = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.1.9:3030/auth/logout",
+        "/auth/logout",
         {},
         {
           headers: {

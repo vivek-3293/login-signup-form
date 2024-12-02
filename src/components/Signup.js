@@ -28,7 +28,7 @@ const Signup = () => {
     let errors = "";
     if (name === "name") {
       if (!value.trim()) {
-        errors = "Name is Requred.";
+        errors = "Name is Required.";
       } else if (!/^[a-zA-Z\s]+$/.test(value)) {
         errors = "Name should be in letters only.";
       }
@@ -36,7 +36,7 @@ const Signup = () => {
 
     if (name === "email") {
       if (!value) {
-        errors = "Email is Requred.";
+        errors = "Email is Required.";
       } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
         errors = "Enter Valid Email.";
       }
@@ -44,7 +44,7 @@ const Signup = () => {
 
     if (name === "password") {
       if (!value) {
-        errors = "Passwor is Requred";
+        errors = "Password is Required";
       } else if (formData.password.length < 6) {
         errors = "Password must be at least 6 characters long.";
       }
@@ -88,7 +88,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "http://192.168.1.9:3030/auth/register",
+        "/auth/register",
         formData
       );
       setMessage(`Registration successful! ${response.data.name}`);

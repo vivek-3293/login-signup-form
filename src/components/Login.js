@@ -24,7 +24,7 @@ const Login = () => {
     let error = "";
     if (name === "email") {
       if (!value) {
-        error = "Email is Requred.";
+        error = "Email is Required.";
       } else if (!/\S+@\S+\.\S+/.test(value)) {
         error = "Enter Valid Email.";
       }
@@ -32,7 +32,7 @@ const Login = () => {
 
     if (name === "password") {
       if (!value) {
-        error = "Passwor is Requred";
+        error = "Password is Required";
       } else if (value.length < 6) {
         error = "Password must be at least 6 characters long.";
       }
@@ -63,7 +63,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("http://192.168.1.9:3030/auth/login", {
+      const response = await axios.post("/auth/login", {
         email,
         password,
       });
