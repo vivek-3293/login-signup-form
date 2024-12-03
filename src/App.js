@@ -8,6 +8,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./context/AuthContext";
+import LoginFormik from "./formikComponents/LoginFormik";
+import SignupFormik from "./formikComponents/SignupFormik";
 
 function App() {
   return (
@@ -15,8 +17,10 @@ function App() {
       <AuthProvider>
         <div>
           <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            {/* <Route path="/" element={<Login />} /> */}
+            <Route path="/" element={<LoginFormik />} />
+            {/* <Route path="/signup" element={<Signup />} /> */}
+            <Route path="/signupformik" element={<SignupFormik />} />
             <Route path="/home" element={ <ProtectedRoute>{" "}<Home />{" "}</ProtectedRoute>
               }
             />

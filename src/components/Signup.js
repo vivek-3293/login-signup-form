@@ -1,9 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -14,14 +13,7 @@ const Signup = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
-  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    if (auth.token){
-      navigate("/home");
-    }
-  }, [auth.token, navigate]);
   
 
   const validateForm = (name, value) => {
@@ -88,7 +80,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "/auth/register",
+        "/api/registration/custom-validation",
         formData
       );
       setMessage(`Registration successful! ${response.data.name}`);

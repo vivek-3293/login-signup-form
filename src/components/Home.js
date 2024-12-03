@@ -1,17 +1,15 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Home = () => {
   const { auth, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       const response = await axios.post(
-        "/auth/logout",
+        "/api/logout",
         {},
         {
           headers: {
@@ -21,7 +19,6 @@ const Home = () => {
       );
       toast.success(response.data.message || "Logout Successful");
       logout();
-      navigate("/");
     } catch (error) {
       console.error("Logout Failed", error);
       toast.error(

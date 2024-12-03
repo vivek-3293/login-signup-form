@@ -10,15 +10,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errors, setErrors] = useState({});
-  const { auth, login } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (auth.token){
-      navigate("/home");
-    }
-  }, [auth.token, navigate]);
-  
 
   const validateForm = (name, value) => {
     let error = "";
@@ -63,13 +57,12 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("/auth/login", {
+      const response = await axios.post("/api/login/custom-validation", {
         email,
         password,
       });
       login(response.data.accessToken);
       toast.success("Login Successful");
-      navigate("/home");
     } catch (error) {
       console.log(error);
       toast.error("Invalid email or password.");

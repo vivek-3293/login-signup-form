@@ -1,13 +1,20 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState(() => ({
-    token: Cookies.get("token") || null,
-  }));
+  const [auth, setAuth] = useState({ token: Cookies.get("token") || null });
+  const navigate = useNavigate();
+  
+    useEffect(() => {
+      if (auth.token){
+        navigate("/home");
+      }
+    }, [auth.token, navigate]);
+  
 
   // Login Function
   const login = (token) => {
@@ -19,12 +26,13 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     Cookies.remove("token");
     setAuth({ token: null });
+    navigate("/")
   };
 
   // Refresh Token Function
   const refreshToken = async () => {
     try {
-      const response = await axios.post("http://192.168.1.9:3030/auth/refresh");
+      const response = await axios.post("/api/refresh");
       if (response.data && response.data.token) {
         const newToken = response.data.token;
         login(newToken);
@@ -35,6 +43,7 @@ export const AuthProvider = ({ children }) => {
       console.log("Token refresh failed:", error.message);
       logout();
     }
+  
   };
 
   return (
