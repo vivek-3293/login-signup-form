@@ -33,17 +33,17 @@ function SignupFormik() {
       email: "",
       password: "",
     },
-    validationSchema,
+    validationSchema: validationSchema,
 
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          "/api/registration/custom-validation",
+          "/api/auth/registration/custom-validation",
           values
         );
         login(response.data.accessToken);
         toast.success("Registration Successful");
-        navigate("/");
+        navigate("/home");
       } catch (error) {
         toast.error("Registration Failed. Please Try Again.");
         setMessage(

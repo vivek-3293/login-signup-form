@@ -57,7 +57,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("/api/login/custom-validation", {
+      const response = await axios.post("/api/auth/login/custom-validation", {
         email,
         password,
       });

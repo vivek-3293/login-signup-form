@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -14,7 +14,6 @@ const Signup = () => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  
 
   const validateForm = (name, value) => {
     let errors = "";
@@ -76,16 +75,15 @@ const Signup = () => {
     setErrors(allErrors);
 
     if (Object.values(allErrors).some((error) => error)) return;
-    
 
     try {
       const response = await axios.post(
-        "/api/registration/custom-validation",
+        "/api/auth/registration/custom-validation",
         formData
       );
       setMessage(`Registration successful! ${response.data.name}`);
       toast.success("Registration successful");
-      navigate("/");
+      navigate("/home");
     } catch (error) {
       setMessage(
         error.response?.data?.error || "Registration failed. Please try again."

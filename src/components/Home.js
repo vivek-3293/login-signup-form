@@ -9,7 +9,7 @@ const Home = () => {
   const handleLogout = async () => {
     try {
       const response = await axios.post(
-        "/api/logout",
+        "/api/auth/logout",
         {},
         {
           headers: {

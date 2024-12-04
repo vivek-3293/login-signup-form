@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import * as Yup from "yup";
 
 function LoginFormik() {
   const { login } = useContext(AuthContext);
@@ -12,20 +13,33 @@ function LoginFormik() {
 
   const [passwordVisible, setPasswordVisible] = useState(false);
 
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Email is Invalid.")
+      .required("Email is Required."),
+    password: Yup.string()
+      .required("Password is Required.")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "Enter Strong Password."
+      ),
+  });
+
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
 
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          "/api/login/custom-validation",
+          "/api/auth/login/custom-validation",
           values
         );
         login(response.data.accessToken);
-        toast.success("Login Successful.");        
+        toast.success("Login Successful.");
         navigate("/home");
       } catch (error) {
         toast.error("Invalid email or password.");
