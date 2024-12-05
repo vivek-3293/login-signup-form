@@ -83,7 +83,7 @@ function LoginFormik() {
               />
 
               <span
-                className="pass-icon-signup position-absulate"
+                className="pass-icon-signup position-absolute"
                 onClick={togglePasswordVisibility}
               >
                 {passwordVisible ? <FaEyeSlash /> : <FaEye />}
