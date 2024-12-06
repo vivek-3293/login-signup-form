@@ -20,7 +20,6 @@ const Home = () => {
       toast.success(response.data.message || "Logout Successful");
       logout();
     } catch (error) {
-      console.error("Logout Failed", error);
       toast.error(
         error.response?.data?.message || "Logout failed. Please try again."
       );

@@ -12,6 +12,7 @@ const Signup = () => {
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ const Signup = () => {
     if (name === "name") {
       if (!value.trim()) {
         errors = "Name is Required.";
-      } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+      } else if (!/^[a-zA-Z0-9\s]+$/.test(value)) {
         errors = "Name should be in letters only.";
       }
     }
@@ -76,6 +77,7 @@ const Signup = () => {
 
     if (Object.values(allErrors).some((error) => error)) return;
 
+    setLoading(true);
     try {
       const response = await axios.post(
         "/api/auth/registration/custom-validation",
@@ -88,6 +90,7 @@ const Signup = () => {
       setMessage(
         error.response?.data?.error || "Registration failed. Please try again."
       );
+      setLoading(false);
     }
   };
 
@@ -131,7 +134,7 @@ const Signup = () => {
                 required
               />
               <span
-                className="pass-icon-signup position-absulate"
+                className="pass-icon-signup position-absolute"
                 onClick={togglePasswordVisibility}
               >
                 {passwordVisible ? <FaEyeSlash /> : <FaEye />}
@@ -142,7 +145,13 @@ const Signup = () => {
             )}
 
             <button type="submit" className="btn btn-primary w-100">
-              Sign Up
+              {loading ? (
+                <div className="spinner-border spinner-border-sm" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              ) : (
+                "Sign Up"
+              )}
             </button>
           </form>
           <p className="text-center mt-3">

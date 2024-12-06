@@ -10,6 +10,7 @@ import * as Yup from "yup";
 function LoginFormik() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -20,7 +21,7 @@ function LoginFormik() {
     password: Yup.string()
       .required("Password is Required.")
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/,
         "Enter Strong Password."
       ),
   });
@@ -33,6 +34,7 @@ function LoginFormik() {
 
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setLoading(true);
       try {
         const response = await axios.post(
           "/api/auth/login/custom-validation",
@@ -43,6 +45,7 @@ function LoginFormik() {
         navigate("/home");
       } catch (error) {
         toast.error("Invalid email or password.");
+        setLoading(false);
       }
     },
   });
@@ -50,6 +53,7 @@ function LoginFormik() {
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
+
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
@@ -93,9 +97,13 @@ function LoginFormik() {
               <p className="text-danger">{formik.errors.password}</p>
             )}
 
-            <button type="submit" className="btn btn-primary w-100">
-              Login Formik
-            </button>
+            {loading ? (
+              <div className="text-center">Loading...</div>
+            ) : (
+              <button type="submit" className="btn btn-primary w-100">
+                Login Formik
+              </button>
+            )}
           </form>
           <p className="text-center mt-3">
             Don't have an account? <Link to="/signupformik">SignUpFormik</Link>

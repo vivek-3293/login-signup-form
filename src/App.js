@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../src/index.css";
 import Home from "./components/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
@@ -17,9 +18,9 @@ function App() {
       <AuthProvider>
         <div>
           <Routes>
-            {/* <Route path="/" element={<Login />} /> */}
-            <Route path="/" element={<LoginFormik />} />
-            {/* <Route path="/signup" element={<Signup />} /> */}
+            <Route path="/" element={<Login />} />
+            <Route path="/loginformik" element={<LoginFormik />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/signupformik" element={<SignupFormik />} />
             <Route path="/home" element={ <ProtectedRoute>{" "}<Home />{" "}</ProtectedRoute>
               }

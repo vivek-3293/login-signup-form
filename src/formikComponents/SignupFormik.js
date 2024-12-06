@@ -8,6 +8,7 @@ import { AuthContext } from "../context/AuthContext";
 import * as Yup from "yup";
 
 function SignupFormik() {
+  const [loading, setLoading] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
@@ -18,12 +19,15 @@ function SignupFormik() {
     name: Yup.string().min(3).max(15).required("Name is Required."),
     email: Yup.string().email("Invalid Email.").required("Email is Required."),
     password: Yup.string()
-      .min(6, 'Password must be at least 6 characters')
-      .max(10, 'Password must not exceed 10 characters')
-      .matches(/[a-z]/, 'Password must contain at least one small letter')
-      .matches(/[A-Z]/, 'Password must contain at least one capital letter')
-      .matches(/\d/, 'Password must contain at least one number')
-      .matches(/[@!$%&*?]/, 'Password must contain at least one special character')
+      .min(6, "Password must be at least 6 characters")
+      .max(10, "Password must not exceed 10 characters")
+      .matches(/[a-z]/, "Password must contain at least one small letter")
+      .matches(/[A-Z]/, "Password must contain at least one capital letter")
+      .matches(/\d/, "Password must contain at least one number")
+      .matches(
+        /[@!$%&*?]/,
+        "Password must contain at least one special character"
+      )
       .required("Password is Required"),
   });
 
@@ -36,6 +40,7 @@ function SignupFormik() {
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
+      setLoading(true);
       try {
         const response = await axios.post(
           "/api/auth/registration/custom-validation",
@@ -50,6 +55,7 @@ function SignupFormik() {
           error.response?.data?.error ||
             "Registration failed. Please try again."
         );
+        setLoading(false);
       }
     },
   });
@@ -57,6 +63,7 @@ function SignupFormik() {
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
+
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
@@ -113,9 +120,13 @@ function SignupFormik() {
               <p className="text-danger">{formik.errors.password}</p>
             )}
 
-            <button type="submit" className="btn btn-primary w-100">
-              Sign Up Formik
-            </button>
+            {loading ? (
+              <div className="text-center">Loading...</div>
+            ) : (
+              <button type="submit" className="btn btn-primary w-100">
+                Sign Up Formik
+              </button>
+            )}
           </form>
           <p className="text-center mt-3">
             Already have an account? <Link to="/">LoginFormik</Link>

@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
     Cookies.remove("token");
     setAuth({ token: null });
     navigate("/")
+    // navigate("/loginformik")
   };
 
   // Refresh Token Function

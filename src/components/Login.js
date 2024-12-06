@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
@@ -10,8 +10,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
 
 
   const validateForm = (name, value) => {
@@ -56,6 +56,7 @@ const Login = () => {
       return;
     }
 
+      setLoading(true);
     try {
       const response = await axios.post("/api/auth/login/custom-validation", {
         email,
@@ -64,8 +65,8 @@ const Login = () => {
       login(response.data.accessToken);
       toast.success("Login Successful");
     } catch (error) {
-      console.log(error);
       toast.error("Invalid email or password.");
+      setLoading(false);
     }
   };
 
@@ -99,7 +100,7 @@ const Login = () => {
               />
 
               <span
-                className="pass-icon position-absulate"
+                className="pass-icon position-absolute"
                 onClick={togglePasswordVisibility}
               >
                 {passwordVisible ? <FaEyeSlash /> : <FaEye />}
@@ -110,7 +111,13 @@ const Login = () => {
             )}
 
             <button type="submit" className="btn btn-primary w-100">
-              Login
+            {loading ? (
+                <div className="spinner-border spinner-border-sm" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
           <p className="text-center mt-3">
