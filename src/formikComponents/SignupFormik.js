@@ -52,7 +52,7 @@ function SignupFormik() {
       } catch (error) {
         toast.error("Registration Failed. Please Try Again.");
         setMessage(
-          error.response?.data?.error ||
+          error.response?.data?.message ||
             "Registration failed. Please try again."
         );
         setLoading(false);

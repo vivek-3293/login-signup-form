@@ -88,7 +88,7 @@ const Signup = () => {
       navigate("/home");
     } catch (error) {
       setMessage(
-        error.response?.data?.error || "Registration failed. Please try again."
+        error.response?.data?.message || "Registration failed. Please try again."
       );
       setLoading(false);
     }
