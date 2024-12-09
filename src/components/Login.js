@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
@@ -9,9 +9,37 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
+
+
+  const validateForm = (name, value) => {
+    let error = "";
+    if (name === "email") {
+      if (!value) {
+        error = "Email is Required.";
+      } else if (!/\S+@\S+\.\S+/.test(value)) {
+        error = "Enter Valid Email.";
+      }
+    }
+
+    if (name === "password") {
+      if (!value) {
+        error = "Password is Required";
+      } else if (value.length < 6) {
+        error = "Password must be at least 6 characters long.";
+      }
+    }
+
+    return error;
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    const errors = validateForm(name, value);
+    setErrors((prev) => ({ ...prev, [name]: errors }));
+  };
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
@@ -19,16 +47,26 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const emailError = validateForm("email", email);
+    const passwordError = validateForm("password", password);
+
+    if (emailError || passwordError) {
+      setErrors({ email: emailError, password: passwordError });
+      return;
+    }
+
+      setLoading(true);
     try {
-      const response = await axios.post("http://192.168.1.68:3030/auth/login", {
+      const response = await axios.post("/api/auth/login/custom-validation", {
         email,
         password,
       });
       login(response.data.accessToken);
       toast.success("Login Successful");
-      navigate("/home");
     } catch (error) {
       toast.error("Invalid email or password.");
+      setLoading(false);
     }
   };
 
@@ -44,31 +82,47 @@ const Login = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={handleBlur}
+              name="email"
               required
             />
-            <input
-              type={passwordVisible ? "text" : "password"}
-              className="form-control my-3"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <span
-              className="position-absulate"
-              style={{ top: "40px", right: "10px", cursor: "pointer" }}
-              onClick={togglePasswordVisibility}
-            >
-              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-            </span>
+            {errors.email && <p className="text-danger">{errors.email}</p>}
+            <div className="position-relative">
+              <input
+                type={passwordVisible ? "text" : "password"}
+                className="form-control my-3"
+                placeholder="Password"
+                value={password}
+                onChange={ (e) => setPassword(e.target.value)}
+                onBlur={handleBlur}
+                name="password"
+                required
+              />
+
+              <span
+                className="pass-icon position-absolute"
+                onClick={togglePasswordVisibility}
+              >
+                {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+            {errors.password && (
+              <p className="text-danger">{errors.password}</p>
+            )}
+
             <button type="submit" className="btn btn-primary w-100">
-              Login
+            {loading ? (
+                <div className="spinner-border spinner-border-sm" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
           <p className="text-center mt-3">
             Don't have an account? <Link to="/signup">Sign Up</Link>
           </p>
-          {error && <p className="text-danger text-center">{error}</p>}
         </div>
       </div>
     </div>
