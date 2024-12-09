@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -88,79 +89,89 @@ const Signup = () => {
       navigate("/home");
     } catch (error) {
       setMessage(
-        error.response?.data?.message || "Registration failed. Please try again."
+        error.response?.data?.message ||
+          "Registration failed. Please try again."
       );
       setLoading(false);
     }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <h2 className="text-center">Sign Up</h2>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              className="form-control my-3"
-              placeholder="Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
-            />
-            {errors.name && <p className="text-danger">{errors.name}</p>}
-            <input
-              type="email"
-              className="form-control my-3"
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
-            />
-            {errors.email && <p className="text-danger">{errors.email}</p>}
-            <div className="position-relative">
+    <>
+      <Helmet>
+        <title>Sign Up</title>
+      </Helmet>
+
+      <div className="container mt-5">
+        <div className="row justify-content-center">
+          <div className="col-md-6">
+            <h2 className="text-center">Sign Up</h2>
+            <form onSubmit={handleSubmit}>
               <input
-                type={passwordVisible ? "text" : "password"}
-                className="form-control my-3"
-                placeholder="Password"
-                name="password"
-                value={formData.password}
+                type="text"
+                className="form-control"
+                placeholder="Name"
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
               />
-              <span
-                className="pass-icon-signup position-absolute"
-                onClick={togglePasswordVisibility}
-              >
-                {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-              </span>
-            </div>
-            {errors.password && (
-              <p className="text-danger">{errors.password}</p>
-            )}
-
-            <button type="submit" className="btn btn-primary w-100">
-              {loading ? (
-                <div className="spinner-border spinner-border-sm" role="status">
-                  <span className="sr-only">Loading...</span>
-                </div>
-              ) : (
-                "Sign Up"
+              {errors.name && <p className="text-danger">{errors.name}</p>}
+              <input
+                type="email"
+                className="form-control mt-4"
+                placeholder="Email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                required
+              />
+              {errors.email && <p className="text-danger">{errors.email}</p>}
+              <div className="position-relative">
+                <input
+                  type={passwordVisible ? "text" : "password"}
+                  className="form-control mt-4"
+                  placeholder="Password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  required
+                />
+                <span
+                  className="pass-icon-signup position-absolute"
+                  onClick={togglePasswordVisibility}
+                >
+                  {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+              {errors.password && (
+                <p className="text-danger">{errors.password}</p>
               )}
-            </button>
-          </form>
-          <p className="text-center mt-3">
-            Already have an account? <Link to="/">Login</Link>
-          </p>
-          {message && <p className="text-danger text-center">{message}</p>}
+
+              <button type="submit" className="btn btn-primary w-100 mt-4">
+                {loading ? (
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="sr-only">Loading...</span>
+                  </div>
+                ) : (
+                  "Sign Up"
+                )}
+              </button>
+            </form>
+            <p className="text-center mt-3">
+              Already have an account? <Link to="/">Login</Link>
+            </p>
+            {message && <p className="text-danger text-center">{message}</p>}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
