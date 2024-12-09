@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import * as Yup from "yup";
+import { Helmet } from "react-helmet";
 
 function LoginFormik() {
   const { login } = useContext(AuthContext);
@@ -55,62 +56,68 @@ function LoginFormik() {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <h2 className="text-center">Login Formik</h2>
-          <form onSubmit={formik.handleSubmit}>
-            <input
-              type="text"
-              className="form-control my-3"
-              placeholder="Email"
-              name="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              required
-            />
-            {formik.touched.email && formik.errors.email && (
-              <p className="text-danger">{formik.errors.email}</p>
-            )}
-
-            <div className="position-relative">
+    <>
+      <Helmet>
+        <title>LoginFormik</title>
+      </Helmet>
+      <div className="container mt-5">
+        <div className="row justify-content-center">
+          <div className="col-md-6">
+            <h2 className="text-center">Login Formik</h2>
+            <form onSubmit={formik.handleSubmit}>
               <input
-                type={passwordVisible ? "text" : "password"}
-                className="form-control my-3"
-                placeholder="Password"
-                name="password"
-                value={formik.values.password}
+                type="text"
+                className="form-control"
+                placeholder="Email"
+                name="email"
+                value={formik.values.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 required
               />
+              {formik.touched.email && formik.errors.email && (
+                <p className="text-danger">{formik.errors.email}</p>
+              )}
 
-              <span
-                className="pass-icon-signup position-absolute"
-                onClick={togglePasswordVisibility}
-              >
-                {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-              </span>
-            </div>
-            {formik.touched.password && formik.errors.password && (
-              <p className="text-danger">{formik.errors.password}</p>
-            )}
+              <div className="position-relative">
+                <input
+                  type={passwordVisible ? "text" : "password"}
+                  className="form-control mt-4"
+                  placeholder="Password"
+                  name="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  required
+                />
 
-            {loading ? (
-              <div className="text-center">Loading...</div>
-            ) : (
-              <button type="submit" className="btn btn-primary w-100">
-                Login Formik
-              </button>
-            )}
-          </form>
-          <p className="text-center mt-3">
-            Don't have an account? <Link to="/signupformik">SignUpFormik</Link>
-          </p>
+                <span
+                  className="pass-icon-signup position-absolute"
+                  onClick={togglePasswordVisibility}
+                >
+                  {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
+              {formik.touched.password && formik.errors.password && (
+                <p className="text-danger">{formik.errors.password}</p>
+              )}
+
+              {loading ? (
+                <div className="text-center">Loading...</div>
+              ) : (
+                <button type="submit" className="btn btn-primary w-100 mt-4">
+                  Login Formik
+                </button>
+              )}
+            </form>
+            <p className="text-center mt-3">
+              Don't have an account?{" "}
+              <Link to="/signupformik">SignUpFormik</Link>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

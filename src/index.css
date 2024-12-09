@@ -27,3 +27,6 @@ body {
   height: 24px;
   border-width: 2px;
 }
+.text-danger{
+  margin: 0;
+}

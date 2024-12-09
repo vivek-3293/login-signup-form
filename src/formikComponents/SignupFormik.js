@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext";
 import * as Yup from "yup";
+import { Helmet } from "react-helmet";
 
 function SignupFormik() {
   const [loading, setLoading] = useState(false);
@@ -65,6 +66,10 @@ function SignupFormik() {
   };
 
   return (
+    <>
+    <Helmet>
+        <title>SignupFormik</title>
+      </Helmet>
     <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
@@ -72,7 +77,7 @@ function SignupFormik() {
           <form onSubmit={formik.handleSubmit}>
             <input
               type="text"
-              className="form-control my-3"
+              className="form-control"
               placeholder="Name"
               name="name"
               value={formik.values.name}
@@ -86,7 +91,7 @@ function SignupFormik() {
 
             <input
               type="email"
-              className="form-control my-3"
+              className="form-control mt-4"
               placeholder="Email"
               name="email"
               value={formik.values.email}
@@ -101,7 +106,7 @@ function SignupFormik() {
             <div className="position-relative">
               <input
                 type={passwordVisible ? "text" : "password"}
-                className="form-control my-3"
+                className="form-control mt-4"
                 placeholder="Password"
                 name="password"
                 value={formik.values.password}
@@ -123,7 +128,7 @@ function SignupFormik() {
             {loading ? (
               <div className="text-center">Loading...</div>
             ) : (
-              <button type="submit" className="btn btn-primary w-100">
+              <button type="submit" className="btn btn-primary w-100 mt-4">
                 Sign Up Formik
               </button>
             )}
@@ -135,6 +140,7 @@ function SignupFormik() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
