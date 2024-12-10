@@ -9,7 +9,7 @@ const Home = () => {
   const handleLogout = async () => {
     try {
       const response = await axios.post(
-        "/api/auth/logout",
+        `${process.env.REACT_APP_API_BASE_URL}/api/auth/logout`,
         {},
         {
           headers: {
