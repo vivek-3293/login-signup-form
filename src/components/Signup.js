@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import { AuthContext } from "../context/AuthContext";
 import { post } from "../services/api";
+import { userSignup } from "../services/urlService";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -83,15 +84,13 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      
-      const response = await post(
-        "/api/auth/registration/custom-validation",
-        formData
+      const response = await post(userSignup(), formData);  
+
+      toast.success(
+        `Registration successful Welcome, ${response.newUserDetail.name}`
       );
-  
-      toast.success(`Registration successful Welcome, ${response.newUserDetail.name}`);
       login(response.accessToken);
-      
+
       navigate("/home");
     } catch (error) {
       toast.error("Registration Failed. Please Try Again.");

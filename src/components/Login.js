@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Helmet } from "react-helmet";
 import { post } from "../services/api";
+import { userLogin } from "../services/urlService";
 
 const Login = () => {
   const [formData, setFormData] = useState({email: "", password: ""});
@@ -63,7 +64,7 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await post("/api/auth/login/custom-validation", formData);
+      const response = await post(userLogin(), formData);
       login(response.accessToken);
       toast.success("Login Successful");
     } catch (error) {
