@@ -1,10 +1,10 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { Helmet } from "react-helmet";
 import { AuthContext } from "../context/AuthContext";
+import { post } from "../services/api";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -83,21 +83,20 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/auth/registration/custom-validation`,
+      
+      const response = await post(
+        "/api/auth/registration/custom-validation",
         formData
       );
-
-      setMessage(`Registration successful! ${response.data.name}`);
-      login(response.data.accessToken);
-      toast.success("Registration successful");
-      console.log("Navigating to /home");
+  
+      toast.success(`Registration successful Welcome, ${response.newUserDetail.name}`);
+      login(response.accessToken);
+      
       navigate("/home");
     } catch (error) {
       toast.error("Registration Failed. Please Try Again.");
       setMessage(
-        error.response?.data?.message ||
-          "Registration failed. Please try again."
+        error.response?.message || "Registration failed. Please try again."
       );
       setLoading(false);
     }

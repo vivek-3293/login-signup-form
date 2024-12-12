@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
   // Login Function
   const login = (token) => {
-    Cookies.set("token", token, { expires: 7 });
+    Cookies.set("token", token);
     setAuth({ token });
   };
 
@@ -30,25 +30,8 @@ export const AuthProvider = ({ children }) => {
     // navigate("/loginformik")
   };
 
-  // Refresh Token Function
-  const refreshToken = async () => {
-    try {
-      const response = await axios.post("/api/refresh");
-      if (response.data && response.data.token) {
-        const newToken = response.data.token;
-        login(newToken);
-      } else {
-        console.log("Refresh token response invalid");
-      }
-    } catch (error) {
-      console.log("Token refresh failed:", error.message);
-      logout();
-    }
-  
-  };
-
   return (
-    <AuthContext.Provider value={{ auth, login, logout, refreshToken }}>
+    <AuthContext.Provider value={{ auth, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

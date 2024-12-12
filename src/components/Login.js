@@ -3,12 +3,11 @@ import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import axios from "axios";
 import { Helmet } from "react-helmet";
+import { post } from "../services/api";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({email: "", password: ""});
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -35,6 +34,10 @@ const Login = () => {
     return error;
   };
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   const handleBlur = (e) => {
     const { name, value } = e.target;
     const errors = validateForm(name, value);
@@ -48,6 +51,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const {email, password} = formData;
+
     const emailError = validateForm("email", email);
     const passwordError = validateForm("password", password);
 
@@ -58,12 +63,8 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/auth/login/custom-validation`, {
-        email,
-        password,
-      });
-      login(response.data.accessToken);
+      const response = await post("/api/auth/login/custom-validation", formData);
+      login(response.accessToken);
       toast.success("Login Successful");
     } catch (error) {
       toast.error("Invalid email or password.");
@@ -85,8 +86,8 @@ const Login = () => {
                 type="email"
                 className="form-control"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
                 onBlur={handleBlur}
                 name="email"
                 required
@@ -99,8 +100,8 @@ const Login = () => {
                   type={passwordVisible ? "text" : "password"}
                   className="form-control mt-4"
                   placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formData.password}
+                  onChange={handleChange}
                   onBlur={handleBlur}
                   name="password"
                   required
