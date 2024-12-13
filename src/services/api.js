@@ -2,15 +2,15 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 // Post Method Api
-export const post = async (url, data) => {
+
+export const post = async (url, data, requiresAuth = false) => {
   try {
     const token = Cookies.get("token");
-    // console.log(token);
 
-    const headers = {
-      Authorization: token ? `Bearer ${token}` : undefined,
-    };
-    console.log("headers token", headers);
+    const headers = {};
+    if (requiresAuth && token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
 
     const response = await axios.post(url, data, { headers });
     return response.data;

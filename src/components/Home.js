@@ -9,14 +9,12 @@ const Home = () => {
 
   const handleLogout = async () => {
     try {
-      console.log("Token", auth.token);
       
-      const response = await post(userLogout(),{});
+      const response = await post(userLogout(),{}, true);
       
       toast.success(response.message || "Logout Successful");
       logout();
     } catch (error) {
-      console.log("Logout Error", error.response);
       
       toast.error(
         error.response?.message || "Logout failed. Please try again."
