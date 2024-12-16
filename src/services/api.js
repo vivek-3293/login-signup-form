@@ -13,6 +13,8 @@ export const post = async (url, data, requiresAuth = false) => {
     }
 
     const response = await axios.post(url, data, { headers });
+    console.log(response);
+    
     return response.data;
   } catch (error) {
     return error.response?.data || { message: "Something Went Wrong!" };
