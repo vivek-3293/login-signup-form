@@ -1,27 +1,23 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
-import axios from "axios";
+import { post } from "../services/api";
+import { userLogout } from "../services/urlService";
 
 const Home = () => {
   const { auth, logout } = useContext(AuthContext);
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post(
-        "/api/auth/logout",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        }
-      );
-      toast.success(response.data.message || "Logout Successful");
+      
+      const response = await post(userLogout(),{}, true);
+      
+      toast.success(response.message || "Logout Successful");
       logout();
     } catch (error) {
+      
       toast.error(
-        error.response?.data?.message || "Logout failed. Please try again."
+        error.response?.message || "Logout failed. Please try again."
       );
     }
   };

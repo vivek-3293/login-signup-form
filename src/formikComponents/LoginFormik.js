@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import * as Yup from "yup";
 import { Helmet } from "react-helmet";
+import { userLogin, userLoginFormik } from "../services/urlService";
 
 function LoginFormik() {
   const { login } = useContext(AuthContext);
@@ -37,10 +38,7 @@ function LoginFormik() {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await axios.post(
-          "/api/auth/login/custom-validation",
-          values
-        );
+        const response = await axios.post(userLoginFormik(), values);
         login(response.data.accessToken);
         toast.success("Login Successful.");
         navigate("/home");

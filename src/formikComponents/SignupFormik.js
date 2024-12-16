@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext";
 import * as Yup from "yup";
 import { Helmet } from "react-helmet";
+import { userSignupFormik } from "../services/urlService";
 
 function SignupFormik() {
   const [loading, setLoading] = useState(false);
@@ -43,10 +44,7 @@ function SignupFormik() {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await axios.post(
-          "/api/auth/registration/custom-validation",
-          values
-        );
+        const response = await axios.post(userSignupFormik(), values);
         login(response.data.accessToken);
         toast.success("Registration Successful");
         navigate("/home");
