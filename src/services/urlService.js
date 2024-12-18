@@ -7,12 +7,12 @@ export const apiClient = (endPoint) => {
 
 // ALL API URL
 
-export const userSignup = () => {
-  return apiClient("/api/auth/registration/custom-validation");
+export const userRegister = () => {
+  return apiClient("/api/auth/register");
 };
 
 export const userLogin = () => {
-  return apiClient("/api/auth/login/custom-validation");
+  return apiClient("/api/auth/login");
 };
 
 export const userLogout = () => {

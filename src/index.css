@@ -30,3 +30,25 @@ body {
 .text-danger{
   margin: 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========== Media Responsive ============ */
+@media (max-width: 768px) {
+  .navbar-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+}

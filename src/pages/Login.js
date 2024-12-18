@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Helmet } from "react-helmet";
-import { post } from "../services/api";
-import { userLogin } from "../services/urlService";
+import { post } from "../services/Api";
+import { userLogin } from "../services/UrlService";
 
 const Login = () => {
   const [formData, setFormData] = useState({email: "", password: ""});
@@ -91,7 +91,6 @@ const Login = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 name="email"
-                required
               />
               {errors.email && (
                 <p className="text-danger mb-3">{errors.email}</p>
@@ -105,7 +104,6 @@ const Login = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   name="password"
-                  required
                 />
 
                 <span
@@ -133,7 +131,7 @@ const Login = () => {
               </button>
             </form>
             <p className="text-center mt-3">
-              Don't have an account? <Link to="/signup">Sign Up</Link>
+              Don't have an account? <Link to="/signup">Register</Link>
             </p>
           </div>
         </div>

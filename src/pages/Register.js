@@ -4,14 +4,17 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import { AuthContext } from "../context/AuthContext";
-import { post } from "../services/api";
-import { userSignup } from "../services/urlService";
+import { post } from "../services/Api";
+import { userRegister } from "../services/UrlService";
 
-const Signup = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
+    confirm_password: "",
+    phone: "",
+    address: "",
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const { login } = useContext(AuthContext);
@@ -39,11 +42,35 @@ const Signup = () => {
       }
     }
 
+    if (name === "phone") {
+      if (!value.trim()) {
+        errors = "Phone number is required.";
+      } else if (!/^\d{10}$/.test(value)) {
+        errors = "Enter a valid 10-digit phone number.";
+      }
+    }
+    
+    if (name === "address") {
+      if (!value.trim()) {
+        errors = "Address is required.";
+      } else if (value.length < 10) {
+        errors = "Address should be at least 10 characters long.";
+      }
+    }
+
     if (name === "password") {
       if (!value) {
         errors = "Password is Required";
       } else if (formData.password.length < 6) {
         errors = "Password must be at least 6 characters long.";
+      }
+    }
+
+    if (name === "confirm_password") {
+      if (!value) {
+        errors = "Confirm Password is required.";
+      } else if (value !== formData.password) {
+        errors = "Passwords do not match.";
       }
     }
 
@@ -71,11 +98,17 @@ const Signup = () => {
     const nameError = validateForm("name", formData.name);
     const emailError = validateForm("email", formData.email);
     const passwordError = validateForm("password", formData.password);
+    const phoneError = validateForm("phone", formData.phone);
+    const addressError = validateForm("address", formData.address);
+    const confirmPasswordError = validateForm("confirm_password", formData.confirm_password);
 
     const allErrors = {
       name: nameError,
       email: emailError,
       password: passwordError,
+      phone: phoneError,
+      address: addressError,
+      confirm_password: confirmPasswordError,
     };
 
     setErrors(allErrors);
@@ -84,15 +117,17 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      const response = await post(userSignup(), formData);  
+      const response = await post(userRegister(), formData);
+      console.log("API Response", response);
+      
 
-      toast.success(
-        `Registration successful Welcome, ${response.newUserDetail.name}`
-      );
+      toast.success('Registration successful Welcome');
       login(response.accessToken);
-
+      console.log(response.accessToken);
+      
       navigate("/home");
     } catch (error) {
+      console.error("API Error:", error.response || error.message);
       toast.error("Registration Failed. Please Try Again.");
       setMessage(
         error.response?.message || "Registration failed. Please try again."
@@ -120,7 +155,6 @@ const Signup = () => {
                 value={formData.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                required
               />
               {errors.name && <p className="text-danger">{errors.name}</p>}
               <input
@@ -131,9 +165,29 @@ const Signup = () => {
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                required
               />
               {errors.email && <p className="text-danger">{errors.email}</p>}
+              <input
+                type="text"
+                className="form-control mt-4"
+                placeholder="Phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.phone && <p className="text-danger">{errors.phone}</p>}
+              <textarea
+                className="form-control mt-4"
+                placeholder="Address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.address && (
+                <p className="text-danger">{errors.address}</p>
+              )}
               <div className="position-relative">
                 <input
                   type={passwordVisible ? "text" : "password"}
@@ -143,7 +197,6 @@ const Signup = () => {
                   value={formData.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  required
                 />
                 <span
                   className="pass-icon-signup position-absolute"
@@ -156,6 +209,18 @@ const Signup = () => {
                 <p className="text-danger">{errors.password}</p>
               )}
 
+              <input
+                type={passwordVisible ? "text" : "password"}
+                className="form-control mt-4"
+                placeholder="Confirm Password"
+                name="confirm_password"
+                value={formData.confirm_password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {errors.confirm_password && (
+                <p className="text-danger">{errors.confirm_password}</p>
+              )}
               <button type="submit" className="btn btn-primary w-100 mt-4">
                 {loading ? (
                   <div
@@ -165,7 +230,7 @@ const Signup = () => {
                     <span className="sr-only">Loading...</span>
                   </div>
                 ) : (
-                  "Sign Up"
+                  "Register"
                 )}
               </button>
             </form>
@@ -180,4 +245,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Register;
