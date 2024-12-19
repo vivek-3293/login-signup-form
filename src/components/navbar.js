@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
@@ -9,23 +9,29 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
-        <Link className="navbar-brand" to="/">
-          Library System
-        </Link>
+        <h2> Library System</h2>
+
         <div className="collapse navbar-collapse">
           <ul className="navbar-nav ms-auto">
             {auth.token ? (
               <>
-                {isAdmin && <Link className="nav-link" to="/admin">Admin Dashboard</Link>}
-                {!isAdmin && <Link className="nav-link" to="/member">My Dashboard</Link>}
+                {isAdmin && (
+                  <NavLink className="nav-link" to="/admin">
+                    Add Book
+                  </NavLink>
+                )}
                 <button className="btn btn-danger" onClick={handleLogout}>
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link className="nav-link" to="/">Login</Link>
-                <Link className="nav-link" to="/signup">Signup</Link>
+                <Link className="nav-link" to="/login">
+                  Login
+                </Link>
+                <Link className="nav-link" to="/signup">
+                  Signup
+                </Link>
               </>
             )}
           </ul>

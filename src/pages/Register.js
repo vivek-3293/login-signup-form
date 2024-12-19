@@ -117,17 +117,13 @@ const Register = () => {
 
     setLoading(true);
     try {
-      const response = await post(userRegister(), formData);
-      console.log("API Response", response);
-      
+      const response = await post(userRegister(), formData);    
 
       toast.success('Registration successful Welcome');
       login(response.accessToken);
-      console.log(response.accessToken);
       
-      navigate("/home");
+      navigate("/");
     } catch (error) {
-      console.error("API Error:", error.response || error.message);
       toast.error("Registration Failed. Please Try Again.");
       setMessage(
         error.response?.message || "Registration failed. Please try again."
@@ -159,7 +155,7 @@ const Register = () => {
               {errors.name && <p className="text-danger">{errors.name}</p>}
               <input
                 type="email"
-                className="form-control mt-4"
+                className="form-control mt-3"
                 placeholder="Email"
                 name="email"
                 value={formData.email}
@@ -169,7 +165,7 @@ const Register = () => {
               {errors.email && <p className="text-danger">{errors.email}</p>}
               <input
                 type="text"
-                className="form-control mt-4"
+                className="form-control mt-3"
                 placeholder="Phone"
                 name="phone"
                 value={formData.phone}
@@ -178,7 +174,7 @@ const Register = () => {
               />
               {errors.phone && <p className="text-danger">{errors.phone}</p>}
               <textarea
-                className="form-control mt-4"
+                className="form-control mt-3"
                 placeholder="Address"
                 name="address"
                 value={formData.address}
@@ -191,7 +187,7 @@ const Register = () => {
               <div className="position-relative">
                 <input
                   type={passwordVisible ? "text" : "password"}
-                  className="form-control mt-4"
+                  className="form-control mt-3"
                   placeholder="Password"
                   name="password"
                   value={formData.password}
@@ -211,7 +207,7 @@ const Register = () => {
 
               <input
                 type={passwordVisible ? "text" : "password"}
-                className="form-control mt-4"
+                className="form-control mt-3"
                 placeholder="Confirm Password"
                 name="confirm_password"
                 value={formData.confirm_password}
@@ -235,8 +231,9 @@ const Register = () => {
               </button>
             </form>
             <p className="text-center mt-3">
-              Already have an account? <Link to="/">Login</Link>
+              Already have an account? <Link to="/login">Login</Link>
             </p>
+            
             {message && <p className="text-danger text-center">{message}</p>}
           </div>
         </div>

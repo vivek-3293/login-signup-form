@@ -15,12 +15,29 @@ export const userLogin = () => {
   return apiClient("/api/auth/login");
 };
 
+export const userResetPassword = () => {
+  return apiClient("/api/auth/reset-password");
+};
+
 export const userLogout = () => {
   return apiClient("/api/auth/logout");
 };
-export const userLoginFormik = () => {
-  return apiClient("/api/auth/login/custom-validation");
+export const userAddBook = () => {
+  return apiClient("/api/books");
 };
-export const userSignupFormik = () => {
-  return apiClient("/api/auth/registration/custom-validation");
-};
+
+
+
+
+
+
+
+
+
+
+// export const userLoginFormik = () => {
+//   return apiClient("/api/auth/login/custom-validation");
+// };
+// export const userSignupFormik = () => {
+//   return apiClient("/api/auth/registration/custom-validation");
+// };

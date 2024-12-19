@@ -3,16 +3,11 @@ import { AuthContext } from "../context/AuthContext";
 
 const Home = () => {
   const { auth } = useContext(AuthContext);
-  const isAdmin = auth?.role === "admin";
 
   return (
     <div className="container text-center mt-5">
       <h1>Welcome to Library Management System</h1>
-      {isAdmin ? (
-        <p>You are logged in as <b>Admin</b>.</p>
-      ) : (
-        <p>You are logged in as <b>Member</b>.</p>
-      )}
+      <p>You are logged in as <b>{auth?.role === "admin" ? "Admin" : "Member"}</b>.</p>
     </div>
   );
 };

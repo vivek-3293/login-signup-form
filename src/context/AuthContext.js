@@ -8,12 +8,16 @@ import { post } from "../services/Api";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({ token: Cookies.get("token") || null });
+  const [auth, setAuth] = useState({ 
+    token: Cookies.get("token") || null,
+    role: Cookies.get("role") || null,
+  });
+    
   const navigate = useNavigate();
 
   useEffect(() => {
     if (auth.token) {
-      navigate("/home");
+      navigate("/");
     }
   }, [auth.token, navigate]);
 
@@ -33,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       Cookies.remove("role");
       setAuth({ token: null, role: null });
       toast.success(response.message || "Logout Successful");
-      navigate("/");
+      navigate("/login");
       // navigate("/loginformik")
     } catch (error) {
       toast.error(
@@ -50,3 +54,60 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { createContext, useState ,useContext} from "react";
+// import { useNavigate } from "react-router-dom";
+
+// export const AuthContext = createContext();
+
+// export const AuthProvider = ({ children }) => {
+//   const [auth, setAuth] = useState(() => {
+//     const savedAuth = localStorage.getItem("auth");
+//     return savedAuth ? JSON.parse(savedAuth) : {};
+//   });
+  
+//   const navigate = useNavigate();
+
+//   const handleLogin = (token, role) => {
+//     setAuth({ token, role });
+//     localStorage.setItem("auth", JSON.stringify({ token, role }));
+//     navigate("/");
+//   };
+
+//   const handleLogout = () => {
+//     setAuth({});
+//     localStorage.removeItem("auth");
+//     navigate("/login");
+//   };
+
+//   return (
+//     <AuthContext.Provider value={{ auth, handleLogin, handleLogout }}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+// export const useAuth = () => useContext(AuthContext);
