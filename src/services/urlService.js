@@ -26,7 +26,21 @@ export const userAddBook = () => {
   return apiClient("/api/books");
 };
 
+export const userBooksList = () => {
+  return apiClient("/api/books");
+};
 
+export const getBookById = (id) => {
+  return apiClient(`/api/books/${id}`);
+};
+
+export const updateBook = (id) => {
+  return apiClient(`/api/books/${id}`);
+};
+
+export const deleteBook = (id) => {
+  return apiClient(`/api/books/${id}`);
+};
 
 
 

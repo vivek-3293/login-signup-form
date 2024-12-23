@@ -17,7 +17,7 @@ const Register = () => {
     address: "",
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const { login } = useContext(AuthContext);
+  const { handleLogin } = useContext(AuthContext);
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -120,7 +120,7 @@ const Register = () => {
       const response = await post(userRegister(), formData);    
 
       toast.success('Registration successful Welcome');
-      login(response.accessToken);
+      handleLogin(response.accessToken);
       
       navigate("/");
     } catch (error) {

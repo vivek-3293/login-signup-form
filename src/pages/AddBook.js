@@ -1,12 +1,13 @@
-import React from "react";
-import { useAuth } from "../context/AuthContext";
-import { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
-import { post } from "../services/Api";
-import { userAddBook } from "../services/UrlService";
+import { post, get, put } from "../services/Api";
+import { getBookById, updateBook, userAddBook } from "../services/UrlService";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddBook = () => {
-  const { auth } = useAuth();
+  const { auth } = useContext(AuthContext);
+  const { id } = useParams();
   const [bookDetails, setBookDetails] = useState({
     title: "",
     authors: "",
@@ -16,12 +17,74 @@ const AddBook = () => {
     totalCopies: "",
     shelfNumber: "",
   });
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
+  // Get BookDetails to Book By Id
+  useEffect(() => {
+    if (id) {
+      const fetchBookDetails = async () => {
+        try {
+          const response = await get(getBookById(id));
+
+          const book = response.book || response.Book;
+
+          if (book) {
+            setBookDetails({
+              title: book.title || "",
+              authors: Array.isArray(book.authors)
+                ? book.authors.join(", ")
+                : book.authors || "",
+              ISBN: book.ISBN || "",
+              category: book.category || "",
+              publicationYear: book.publicationYear?.toString() || "",
+              totalCopies: book.totalCopies?.toString() || "",
+              shelfNumber: book.shelfNumber || "",
+            });
+          } else {
+            toast.error("Book details not found or invalid response format!");
+          }
+        } catch (error) {
+          toast.error("Failed to fetch book details. Please try again.");
+        }
+      };
+
+      fetchBookDetails();
+    }
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBookDetails({ ...bookDetails, [name]: value });
+
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!bookDetails.title.trim()) newErrors.title = "Title is required.";
+    if (!bookDetails.authors.trim())
+      newErrors.authors = "Authors are required.";
+    if (!bookDetails.ISBN.trim()) newErrors.ISBN = "ISBN is required.";
+    if (!bookDetails.category.trim())
+      newErrors.category = "Category is required.";
+    if (!bookDetails.publicationYear.trim()) {
+      newErrors.publicationYear = "Publication year is required.";
+    } else if (!/^\d{4}$/.test(bookDetails.publicationYear)) {
+      newErrors.publicationYear = "Publication year must be 4 digits.";
+    }
+    if (!bookDetails.totalCopies.trim())
+      newErrors.totalCopies = "Total copies are required.";
+    if (!bookDetails.shelfNumber.trim())
+      newErrors.shelfNumber = "Shelf number is required.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // AddBook and Update Book API Call
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!auth.token) {
@@ -29,120 +92,86 @@ const AddBook = () => {
       return;
     }
 
-    console.log("Submitting Book Details:", bookDetails);
+    if (!validateForm()) {
+      toast.error("Please fill all required fields correctly.");
+      return;
+    }
+
     try {
-      const response = await post(userAddBook(), bookDetails, true);
-      console.log("Response from API:", response);
-      toast.success("Book Added Successfully");
-      console.log(response);
+      if (id) {
+        await put(updateBook(id), bookDetails, true);
+        toast.success("Book Updated Successfully");
+      } else {
+        await post(userAddBook(), bookDetails, true);
+        toast.success("Book Added Successfully");
+      }
+
+      setBookDetails({
+        title: "",
+        authors: "",
+        ISBN: "",
+        category: "",
+        publicationYear: "",
+        totalCopies: "",
+        shelfNumber: "",
+      });
+      navigate("/");
     } catch (error) {
-      console.error("Error while adding book:", error.response?.data?.message);
-      toast.error(error.response?.data?.message || "Book already exist");
+      
+      toast.error(error.response?.data?.message);
     }
   };
 
+  // Cancle Button
+  const handleCancel = () => {
+    navigate("/");
+  };
+
+
   return (
-    <div className="container">
-      <h2>Add a New Book</h2>
+    <div className="container mt-5">
+      <h2>{id ? "Update Book" : "Add a New Book"}</h2>
       <form onSubmit={handleSubmit}>
         <table className="table table-bordered">
           <tbody>
-            <tr>
-              <th>Title</th>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="title"
-                  onChange={handleChange}
-                  value={bookDetails.title}
-                  placeholder="Enter book title"
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>Authors</th>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="authors"
-                  onChange={handleChange}
-                  value={bookDetails.authors}
-                  placeholder="Enter author's name"
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>ISBN</th>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="ISBN"
-                  onChange={handleChange}
-                  value={bookDetails.ISBN}
-                  placeholder="Enter ISBN"
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>Category</th>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="category"
-                  onChange={handleChange}
-                  value={bookDetails.category}
-                  placeholder="Enter category"
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>Publication Year</th>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="publicationYear"
-                  onChange={handleChange}
-                  value={bookDetails.publicationYear}
-                  placeholder="Enter publication year"
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>Total Copies</th>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="totalCopies"
-                  onChange={handleChange}
-                  value={bookDetails.totalCopies}
-                  placeholder="Enter total copies"
-                />
-              </td>
-            </tr>
-            <tr>
-              <th>Shelf Number</th>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="shelfNumber"
-                  onChange={handleChange}
-                  value={bookDetails.shelfNumber}
-                  placeholder="Enter shelf number"
-                />
-              </td>
-            </tr>
+            {[
+              "title",
+              "authors",
+              "ISBN",
+              "category",
+              "publicationYear",
+              "totalCopies",
+              "shelfNumber",
+            ].map((field) => (
+              <tr key={field}>
+                <th>{field.charAt(0).toUpperCase() + field.slice(1)}</th>
+                <td>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name={field}
+                    onChange={handleChange}
+                    value={bookDetails[field] || ""}
+                    placeholder={`Enter ${field}`}
+                  />
+                  {errors[field] && (
+                    <span className="text-danger">{errors[field]}</span>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
         <div className="text-center">
           <button type="submit" className="btn btn-primary">
-            Add Book
+            {id ? "Update Book" : "Add Book"}
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary mx-3"
+            onClick={handleCancel}
+          >
+            Cancel
           </button>
         </div>
       </form>
