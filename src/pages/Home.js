@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import BooksList from "../pages/BookList";
 
+
 const Home = () => {
   const { auth } = useContext(AuthContext);
 
@@ -13,8 +14,8 @@ const Home = () => {
         <b>{auth?.role === "admin" ? "Admin" : "Member"}</b>.
       </p>
 
-      {auth?.role === "admin" && <BooksList />}
-      {/* {auth && <BooksList />} */}
+      {/* {auth?.role === "admin" && <BooksList />} */}
+      {auth && <BooksList />}
     </div>
   );
 };

@@ -31,7 +31,9 @@ body {
   margin: 0;
 }
 
-
+.card-footer {
+  padding: 8px !important;
+}
 
 
 

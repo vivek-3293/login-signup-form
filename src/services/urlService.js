@@ -42,7 +42,9 @@ export const deleteBook = (id) => {
   return apiClient(`/api/books/${id}`);
 };
 
-
+export const searchBooks = (query) => {
+  return apiClient(`/api/books/search?q=${query}`);
+};
 
 
 

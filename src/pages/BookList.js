@@ -1,18 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { del, get } from "../services/Api";
-import { deleteBook, userBooksList } from "../services/UrlService";
-import { Modal, Button } from "react-bootstrap";
+import React, { useEffect, useState, useContext } from "react";
+import { get } from "../services/Api";
+import { userBooksList } from "../services/UrlService";
+import { Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { AuthContext } from "../context/AuthContext";
+import CardComponent from "../components/CardComponent";
+import DeleteModal from "../components/DeleteModal";
+import useDeleteBook from "../components/useDeleteBook";
 
 const BooksList = () => {
-  const [books, setBooks] = useState([]);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedBook, setSelectedBook] = useState(null);
   const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
+  const isAdmin = auth?.role === "admin";
 
+  const {
+    books,
+    setBooks,
+    showDeleteModal,
+    selectedBook,
+    handleDelete,
+    handleShowDeleteModal,
+    handleCloseDeleteModal,
+  } = useDeleteBook();
 
-  // Books List Get
+  // Fetch the list of books
   useEffect(() => {
     async function fetchBooks() {
       const response = await get(userBooksList());
@@ -23,107 +34,47 @@ const BooksList = () => {
     fetchBooks();
   }, []);
 
-  // Close delete confirmation modal
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setSelectedBook(null);
-  };
-
-  // Open delete confirmation modal on delete button click
-  const handleShowDeleteModal = (book) => {
-    setSelectedBook(book);
-    setShowDeleteModal(true);
-  };
-
-
-  // Books Update
-  const handleUpdate = (bookId) => {
-    navigate(`/update-book/${bookId}`);
-  };
-
-  // Books Delete
-  const handleDelete = async () => {
-    try {
-      const response = await del(deleteBook(selectedBook._id), true);
-      if (response.message) {
-        toast.success(response?.data?.message);
-        setBooks(books.filter((book) => book._id !== selectedBook._id)); 
-        handleCloseDeleteModal()
-      } 
-    } catch (error) {
-      toast.error(error.message);
-      handleCloseDeleteModal()
-    }
+  // Add Book Handle
+  const handleAddBook = () => {
+    navigate("/admin");
   };
 
   return (
-    <div className="container mt-5">
-      <h1>Books List</h1>
-      <table className="table mt-5">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Authors</th>
-            <th>ISBN</th>
-            <th>Category</th>
-            <th>PublicationYear</th>
-            <th>TotalCopies</th>
-            <th>ShelfNumber</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {books.length > 0 ? (
-            books.map((book) => (
-              <tr key={book._id}>
-                <td>{book.title}</td>
-                <td>{book.authors.join(", ")}</td>
-                <td>{book.ISBN}</td>
-                <td>{book.category}</td>
-                <td>{book.publicationYear}</td>
-                <td>{book.totalCopies}</td>
-                <td>{book.shelfNumber}</td>
-                <td>
-                  <button
-                    className="btn btn-warning my-1 mx-1"
-                    onClick={() => handleUpdate(book._id)}
-                  >
-                    Update
-                  </button>
-                  <button
-                    className="btn btn-danger my-1 mx-1"
-                    onClick={() => handleShowDeleteModal(book)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5">No books found</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-
-      {/* Delete Confirmation Modal  */}
-      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
-        <Modal.Header>
-          <Modal.Title>Delete Confirmation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Are you sure you want to delete "{selectedBook?.title || 'this book'}"?</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDeleteModal}>
-            No
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Yes, Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+    <div className="container my-5">
+      <h1 className="text-center mb-4">Books List</h1>
+      <div className="d-flex justify-content-end my-3">
+        {isAdmin && (
+          <>
+            <Button variant="success" onClick={handleAddBook}>
+              AddBook
+            </Button>
+          </>
+        )}
+      </div>
+      <Row xs={1} md={2} lg={3} className="g-4">
+        {books.length > 0 ? (
+          books.map((book) => (
+            <Col key={book._id}>
+              <CardComponent
+                book={book}
+                isAdmin={isAdmin}
+                onDelete={handleShowDeleteModal}
+                onUpdate={() => navigate(`/update-book/${book._id}`)}
+              />
+            </Col>
+          ))
+        ) : (
+          <div className="text-center w-100">
+            <p>No books found</p>
+          </div>
+        )}
+      </Row>
+      <DeleteModal
+        show={showDeleteModal}
+        handleClose={handleCloseDeleteModal}
+        handleDelete={handleDelete}
+        book={selectedBook}
+      />
     </div>
   );
 };

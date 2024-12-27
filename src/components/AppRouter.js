@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, Routes, Route, Navigate } from "react-router-dom";
+import { useLocation, Routes, Route} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -9,13 +9,14 @@ import ResetPassword from "../pages/ResetPassword";
 import Navbar from "../components/navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DeleteBook from "../pages/DeleteBook";
 import AdminRoute from "../components/AdminRoute";
+import SingleBook from "../pages/SingleBook";
+import SearchBook from "../pages/SearchBook";
 
 function AppRoutes() {
   const location = useLocation();
 
-  const noNavbarRoutes = ["/login", "/signup", "/reset-password"];
+  const noNavbarRoutes = ["/login", "/signup", "/reset-password", "/book"];
   const showNavbar = !noNavbarRoutes.includes(location.pathname);
 
   return (
@@ -42,6 +43,9 @@ function AppRoutes() {
             </AdminRoute>
           }
         />
+
+        <Route path="/book/:id" element={<SingleBook />} />
+        <Route path="/search" element={<SearchBook />} />
 
         <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>

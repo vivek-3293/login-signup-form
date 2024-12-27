@@ -20,7 +20,7 @@ const AddBook = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  // Get BookDetails to Book By Id
+  // Get BookDetails to Book By Id => UpdateBook
   useEffect(() => {
     if (id) {
       const fetchBookDetails = async () => {
@@ -67,7 +67,14 @@ const AddBook = () => {
     if (!bookDetails.title.trim()) newErrors.title = "Title is required.";
     if (!bookDetails.authors.trim())
       newErrors.authors = "Authors are required.";
-    if (!bookDetails.ISBN.trim()) newErrors.ISBN = "ISBN is required.";
+    if (!bookDetails.ISBN.trim()) {
+      newErrors.ISBN = "ISBN is required.";
+    } else if (!/^\d+(-\d+)*$/.test(bookDetails.ISBN)) {
+      newErrors.ISBN = "ISBN must contain only numbers and dashes ('-').";
+    } else if (new Set(bookDetails.ISBN.split('-')).size !== bookDetails.ISBN.split('-').length) {
+      newErrors.ISBN = "ISBN must not have duplicate numbers.";
+    }
+    
     if (!bookDetails.category.trim())
       newErrors.category = "Category is required.";
     if (!bookDetails.publicationYear.trim()) {
@@ -117,7 +124,6 @@ const AddBook = () => {
       });
       navigate("/");
     } catch (error) {
-      
       toast.error(error.response?.data?.message);
     }
   };
@@ -127,9 +133,8 @@ const AddBook = () => {
     navigate("/");
   };
 
-
   return (
-    <div className="container mt-5">
+    <div className="container my-5">
       <h2>{id ? "Update Book" : "Add a New Book"}</h2>
       <form onSubmit={handleSubmit}>
         <table className="table table-bordered">

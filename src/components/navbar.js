@@ -1,10 +1,26 @@
-import React, { useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
   const { auth, handleLogout } = useContext(AuthContext);
-  const isAdmin = auth?.role === "admin";
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${searchTerm}`);
+    }
+  };
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
+  const handleSignupClick = () => {
+    navigate("/signup");
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -13,25 +29,40 @@ const Navbar = () => {
 
         <div className="collapse navbar-collapse">
           <ul className="navbar-nav ms-auto">
+
+            {/* Search Bar */}
+            <form className="d-flex" onSubmit={handleSearch}>
+              <input
+                className="form-control me-2"
+                type="search"
+                placeholder="Search Books"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button className="btn btn-outline-success mx-1" type="submit">
+                Search
+              </button>
+            </form>
+
+            {/* Buttons */}
             {auth.token ? (
-              <>
-                {isAdmin && (
-                  <NavLink className="nav-link" to="/admin">
-                    Add Book
-                  </NavLink>
-                )}
-                <button className="btn btn-danger" onClick={handleLogout}>
-                  Logout
-                </button>
-              </>
+              <button className="btn btn-outline-danger mx-1" onClick={handleLogout}>
+                Logout
+              </button>
             ) : (
               <>
-                <Link className="nav-link" to="/login">
+                <button
+                  className="btn btn-outline-success mx-1"
+                  onClick={handleLoginClick}
+                >
                   Login
-                </Link>
-                <Link className="nav-link" to="/signup">
+                </button>
+                <button
+                  className="btn btn-outline-success mx-1"
+                  onClick={handleSignupClick}
+                >
                   Signup
-                </Link>
+                </button>
               </>
             )}
           </ul>
