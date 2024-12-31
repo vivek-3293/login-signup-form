@@ -10,7 +10,7 @@ const useDeleteBook = (initialBooks) => {
 
   const handleDelete = async () => {
     try {
-      await del(deleteBook(selectedBook._id), true);
+      await del(deleteBook(selectedBook._id));
       toast.success("Book deleted successfully");
       setBooks(books.filter((book) => book._id !== selectedBook._id));
       setShowDeleteModal(false);

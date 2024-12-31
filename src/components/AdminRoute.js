@@ -5,11 +5,11 @@ import { Navigate } from "react-router-dom";
 const AdminRoute = ({ children }) => {
   const { auth } = useAuth();
 
-  if (!auth.token) {
+  if (!auth) {
     return <Navigate to="/login" />;
   }
 
-  if (auth.role !== "admin") {
+  if (auth?.role !== "admin") {
     return <Navigate to="/" />;
   }
 

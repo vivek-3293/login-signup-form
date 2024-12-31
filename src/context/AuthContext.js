@@ -1,29 +1,28 @@
-import React, { createContext, useState ,useContext} from "react";
+import React, { createContext, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
-
+import { userLogout } from "../services/UrlService";
+import { post } from "../services/Api";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(() => {
     const savedAuth = localStorage.getItem("auth");
-    return savedAuth ? JSON.parse(savedAuth) : {};
+    return savedAuth ? JSON.parse(savedAuth) : null;
   });
-  
+
   const navigate = useNavigate();
 
-  const handleLogin = (token, role) => {
-    setAuth({ token, role });
-    Cookies.set("token", token); 
-    localStorage.setItem("auth", JSON.stringify({ token, role }));
+  const handleLogin = (role) => {
+    setAuth({ role });
+    localStorage.setItem("auth", JSON.stringify({ role }));
     navigate("/");
   };
 
-  const handleLogout = () => {
-    setAuth({});
-    Cookies.remove("token");
+  const handleLogout = async () => {
+    setAuth(null);
     localStorage.removeItem("auth");
+    await post(userLogout());
     navigate("/");
   };
 
@@ -35,26 +34,3 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

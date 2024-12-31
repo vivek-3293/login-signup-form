@@ -14,8 +14,8 @@ const SingleBook = () => {
     async function fetchBookDetails() {
       try {
         const response = await get(getBookById(id));
-        if (response.Book) {
-          setBook(response.Book);
+        if (response.book) {
+          setBook(response.book);
         }
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch book details");

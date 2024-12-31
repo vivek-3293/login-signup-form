@@ -30,8 +30,8 @@ const SearchBook = () => {
     const fetchBooks = async () => {
       try {
         const response = await get(searchBooks(query));
-        if (response.SearchedBooks) {
-          setBooks(response.SearchedBooks);
+        if (response.searchedBooks) {
+          setBooks(response.searchedBooks);
         }
         console.log("api res", response);
         console.log(books);

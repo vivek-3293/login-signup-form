@@ -27,8 +27,8 @@ const BooksList = () => {
   useEffect(() => {
     async function fetchBooks() {
       const response = await get(userBooksList());
-      if (response.allBooks) {
-        setBooks(response.allBooks);
+      if (response.books) {
+        setBooks(response.books);
       }
     }
     fetchBooks();
@@ -44,11 +44,9 @@ const BooksList = () => {
       <h1 className="text-center mb-4">Books List</h1>
       <div className="d-flex justify-content-end my-3">
         {isAdmin && (
-          <>
-            <Button variant="success" onClick={handleAddBook}>
-              AddBook
-            </Button>
-          </>
+          <Button variant="success" onClick={handleAddBook}>
+            Add Book
+          </Button>
         )}
       </div>
       <Row xs={1} md={2} lg={3} className="g-4">

@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import { AuthContext } from "../context/AuthContext";
 import { post } from "../services/Api";
-import { userRegister } from "../services/UrlService";
+import { addMember, userRegister } from "../services/UrlService";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -15,119 +15,94 @@ const Register = () => {
     confirm_password: "",
     phone: "",
     address: "",
+    role: "",
+    status: "",
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const { handleLogin } = useContext(AuthContext);
-
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [isFormChanged, setIsFormChanged] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAddMember = location.state?.isAddMember || false;
 
+  // Validation Logic
   const validateForm = (name, value) => {
     let errors = "";
-    if (name === "name") {
-      if (!value.trim()) {
-        errors = "Name is Required.";
-      } else if (!/^[a-zA-Z0-9\s]+$/.test(value)) {
-        errors = "Name should be in letters only.";
-      }
-    }
-
-    if (name === "email") {
-      if (!value) {
-        errors = "Email is Required.";
-      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        errors = "Enter Valid Email.";
-      }
-    }
-
-    if (name === "phone") {
-      if (!value.trim()) {
-        errors = "Phone number is required.";
-      } else if (!/^\d{10}$/.test(value)) {
-        errors = "Enter a valid 10-digit phone number.";
-      }
-    }
-    
-    if (name === "address") {
-      if (!value.trim()) {
-        errors = "Address is required.";
-      } else if (value.length < 10) {
-        errors = "Address should be at least 10 characters long.";
-      }
-    }
-
-    if (name === "password") {
-      if (!value) {
-        errors = "Password is Required";
-      } else if (formData.password.length < 6) {
-        errors = "Password must be at least 6 characters long.";
-      }
-    }
-
-    if (name === "confirm_password") {
-      if (!value) {
-        errors = "Confirm Password is required.";
-      } else if (value !== formData.password) {
-        errors = "Passwords do not match.";
-      }
-    }
-
+    if (name === "name" && !value.trim()) errors = "Name is required.";
+    if (name === "email" && !/\S+@\S+\.\S+/.test(value))
+      errors = "Invalid email.";
+    if (name === "password" && value.length < 6)
+      errors = "Password must be 6 characters.";
+    if (name === "confirm_password" && value !== formData.password)
+      errors = "Passwords do not match.";
     return errors;
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
-    const errors = validateForm(name, value);
-    setErrors((prev) => ({ ...prev, [name]: errors }));
+    const error = validateForm(name, value);
+    setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setIsFormChanged(true);
   };
 
   const togglePasswordVisibility = () => {
-    setPasswordVisible((prev) => !prev);
+    setPasswordVisible(!passwordVisible);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const nameError = validateForm("name", formData.name);
-    const emailError = validateForm("email", formData.email);
-    const passwordError = validateForm("password", formData.password);
-    const phoneError = validateForm("phone", formData.phone);
-    const addressError = validateForm("address", formData.address);
-    const confirmPasswordError = validateForm("confirm_password", formData.confirm_password);
+    // Validate all fields
+    const requiredFields = isAddMember
+      ? ["name", "email", "password", "confirm_password", "role", "status"]
+      : ["name", "email", "password", "confirm_password"];
 
-    const allErrors = {
-      name: nameError,
-      email: emailError,
-      password: passwordError,
-      phone: phoneError,
-      address: addressError,
-      confirm_password: confirmPasswordError,
-    };
+    const allErrors = {};
+    requiredFields.forEach((field) => {
+      const error = validateForm(field, formData[field]);
+      if (error) allErrors[field] = error;
+    });
 
     setErrors(allErrors);
-
-    if (Object.values(allErrors).some((error) => error)) return;
+    if (Object.keys(allErrors).length > 0) return;
 
     setLoading(true);
     try {
-      const response = await post(userRegister(), formData);    
+      const apiEndpoint = isAddMember ? addMember() : userRegister();
 
-      toast.success('Registration successful Welcome');
-      handleLogin(response.accessToken);
-      
-      navigate("/");
-    } catch (error) {
-      toast.error("Registration Failed. Please Try Again.");
-      setMessage(
-        error.response?.message || "Registration failed. Please try again."
+      const memberRegister = isAddMember
+        ? formData
+        : {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            confirm_password: formData.confirm_password,
+            phone: formData.phone,
+            address: formData.address,
+          };
+
+      const response = await post(apiEndpoint, memberRegister);
+      toast.success(
+        isAddMember ? "Member Added Successfully" : "Registration Successful"
       );
+
+      setIsFormChanged(false);
+      if (isAddMember) {
+        navigate("/members");
+      } else {
+        handleLogin(response.userDetail.role);
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -135,14 +110,17 @@ const Register = () => {
   return (
     <>
       <Helmet>
-        <title>Sign Up</title>
+        <title>{isAddMember ? "Add Member" : "Sign Up"}</title>
       </Helmet>
 
       <div className="container mt-5">
         <div className="row justify-content-center">
           <div className="col-md-6">
-            <h2 className="text-center">Sign Up</h2>
+            <h2 className="text-center">
+              {isAddMember ? "Add Member" : "Sign Up"}
+            </h2>
             <form onSubmit={handleSubmit}>
+              {/* Name */}
               <input
                 type="text"
                 className="form-control"
@@ -153,6 +131,8 @@ const Register = () => {
                 onBlur={handleBlur}
               />
               {errors.name && <p className="text-danger">{errors.name}</p>}
+
+              {/* Email */}
               <input
                 type="email"
                 className="form-control mt-3"
@@ -163,6 +143,7 @@ const Register = () => {
                 onBlur={handleBlur}
               />
               {errors.email && <p className="text-danger">{errors.email}</p>}
+
               <input
                 type="text"
                 className="form-control mt-3"
@@ -184,6 +165,8 @@ const Register = () => {
               {errors.address && (
                 <p className="text-danger">{errors.address}</p>
               )}
+
+              {/* Password */}
               <div className="position-relative">
                 <input
                   type={passwordVisible ? "text" : "password"}
@@ -205,6 +188,7 @@ const Register = () => {
                 <p className="text-danger">{errors.password}</p>
               )}
 
+              {/* Confirm Password */}
               <input
                 type={passwordVisible ? "text" : "password"}
                 className="form-control mt-3"
@@ -217,24 +201,59 @@ const Register = () => {
               {errors.confirm_password && (
                 <p className="text-danger">{errors.confirm_password}</p>
               )}
-              <button type="submit" className="btn btn-primary w-100 mt-4">
-                {loading ? (
-                  <div
-                    className="spinner-border spinner-border-sm"
-                    role="status"
+
+              {/* Role and Status (Only for Add Member) */}
+              {isAddMember && (
+                <>
+                  <select
+                    name="role"
+                    className="form-control mt-3"
+                    value={formData.role}
+                    onChange={handleChange}
                   >
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                ) : (
-                  "Register"
+                    <option value="">Select Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="member">Member</option>
+                  </select>
+                  <select
+                    name="status"
+                    className="form-control mt-3"
+                    value={formData.status}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Status</option>
+                    <option value="active">Active</option>
+                    <option value="suspended">Suspends</option>
+                  </select>
+                </>
+              )}
+
+              <div className="d-flex my-4">
+                <button
+                  type="submit"
+                  className="btn btn-primary me-2"
+                  disabled={!isFormChanged || loading}
+                >
+                  {loading ? "Loading..." : isAddMember ? "Submit" : "Register"}
+                </button>
+                {isAddMember && (
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => navigate(isAddMember ? "/members" : "/")}
+                >
+                  Cancel
+                </button>
                 )}
-              </button>
+              </div>
             </form>
-            <p className="text-center mt-3">
-              Already have an account? <Link to="/login">Login</Link>
-            </p>
-            
-            {message && <p className="text-danger text-center">{message}</p>}
+
+            {/* Hide Links in Add Member */}
+            {!isAddMember && (
+              <p className="text-center mt-3">
+                Already have an account? <Link to="/login">Login</Link>
+              </p>
+            )}
           </div>
         </div>
       </div>

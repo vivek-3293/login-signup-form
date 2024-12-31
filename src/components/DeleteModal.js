@@ -1,10 +1,7 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 
-
-  /* Delete Confirmation Modal */
-
-const DeleteModal = ({ show, handleClose, handleDelete, book }) => {
+const DeleteModal = ({ show, handleClose, handleDelete, books }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header>
@@ -12,8 +9,7 @@ const DeleteModal = ({ show, handleClose, handleDelete, book }) => {
       </Modal.Header>
       <Modal.Body>
         <p>
-          Are you sure you want to delete "{book?.title || "this book"}
-          "?
+          Are you sure you want to delete "{books?.title || "this book"}"?
         </p>
       </Modal.Body>
       <Modal.Footer>

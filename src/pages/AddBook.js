@@ -18,6 +18,7 @@ const AddBook = () => {
     shelfNumber: "",
   });
   const [errors, setErrors] = useState({});
+  const [isFormChanged, setIsFormChanged] = useState(false);
   const navigate = useNavigate();
 
   // Get BookDetails to Book By Id => UpdateBook
@@ -56,6 +57,7 @@ const AddBook = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBookDetails({ ...bookDetails, [name]: value });
+    setIsFormChanged(true);
 
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
@@ -71,10 +73,13 @@ const AddBook = () => {
       newErrors.ISBN = "ISBN is required.";
     } else if (!/^\d+(-\d+)*$/.test(bookDetails.ISBN)) {
       newErrors.ISBN = "ISBN must contain only numbers and dashes ('-').";
-    } else if (new Set(bookDetails.ISBN.split('-')).size !== bookDetails.ISBN.split('-').length) {
+    } else if (
+      new Set(bookDetails.ISBN.split("-")).size !==
+      bookDetails.ISBN.split("-").length
+    ) {
       newErrors.ISBN = "ISBN must not have duplicate numbers.";
     }
-    
+
     if (!bookDetails.category.trim())
       newErrors.category = "Category is required.";
     if (!bookDetails.publicationYear.trim()) {
@@ -94,10 +99,6 @@ const AddBook = () => {
   // AddBook and Update Book API Call
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!auth.token) {
-      toast.error("Please Login First!");
-      return;
-    }
 
     if (!validateForm()) {
       toast.error("Please fill all required fields correctly.");
@@ -106,11 +107,11 @@ const AddBook = () => {
 
     try {
       if (id) {
-        await put(updateBook(id), bookDetails, true);
-        toast.success("Book Updated Successfully");
+        const response = await put(updateBook(id), bookDetails);
+        toast.success(response?.data?.message, "Book Updated Successfully");
       } else {
-        await post(userAddBook(), bookDetails, true);
-        toast.success("Book Added Successfully");
+        const response = await post(userAddBook(), bookDetails);
+        toast.success(response?.data?.message, "Book Added Successfully");
       }
 
       setBookDetails({
@@ -122,6 +123,7 @@ const AddBook = () => {
         totalCopies: "",
         shelfNumber: "",
       });
+      setIsFormChanged(false);
       navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message);
@@ -168,7 +170,11 @@ const AddBook = () => {
           </tbody>
         </table>
         <div className="text-center">
-          <button type="submit" className="btn btn-primary">
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={!isFormChanged}
+          >
             {id ? "Update Book" : "Add Book"}
           </button>
           <button

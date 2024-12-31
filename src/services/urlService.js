@@ -19,6 +19,8 @@ export const userResetPassword = () => {
   return apiClient("/api/auth/reset-password");
 };
 
+
+// ========= Books API ==========
 export const userLogout = () => {
   return apiClient("/api/auth/logout");
 };
@@ -26,8 +28,8 @@ export const userAddBook = () => {
   return apiClient("/api/books");
 };
 
-export const userBooksList = () => {
-  return apiClient("/api/books");
+export const userBooksList = (page = 1) => {
+  return apiClient(`/api/books?page=${page}`);
 };
 
 export const getBookById = (id) => {
@@ -44,6 +46,24 @@ export const deleteBook = (id) => {
 
 export const searchBooks = (query) => {
   return apiClient(`/api/books/search?q=${query}`);
+};
+
+// =========== Member API ============
+
+export const addMember = () => {
+  return apiClient('/api/members');
+};
+
+export const updateMember = (id) => {
+  return apiClient(`/api/members/${id}`);
+};
+
+export const getAllMembers = () => {
+  return apiClient("/api/members");
+};
+
+export const getMemberById = (id) => {
+  return apiClient(`/api/members/${id}`);
 };
 
 

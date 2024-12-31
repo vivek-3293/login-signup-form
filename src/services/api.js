@@ -1,19 +1,14 @@
 import axios from "axios";
-import Cookies from "js-cookie";
+
+axios.defaults.withCredentials = true;
+
 
 // Post Method Api
 
-export const post = async (url, data, requiresAuth = false) => {
+export const post = async (url, data) => {
   try {
-    const token = Cookies.get("token");
+    const response = await axios.post(url, data);
 
-    const headers = {};
-    if (requiresAuth && token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-
-    const response = await axios.post(url, data, { headers });
-    
     return response.data;
   } catch (error) {
     return error.response?.data || { message: "Something Went Wrong!" };
@@ -21,14 +16,9 @@ export const post = async (url, data, requiresAuth = false) => {
 };
 
 // Get Method Api
-export const get = async (url, requiresAuth = false) => {
+export const get = async (url) => {
   try {
-    const token = Cookies.get("token");
-    const headers = {};
-    if (requiresAuth && token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-    const response = await axios.get(url, { headers });
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     return error.response?.data || { message: "Something went wrong!" };
@@ -36,33 +26,20 @@ export const get = async (url, requiresAuth = false) => {
 };
 
 // Put Method Api
-export const put = async (url, data, requiresAuth = false) => {
+export const put = async (url, data) => {
   try {
-    const token = Cookies.get("token");
-    const headers = {};
-    if (requiresAuth && token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-    const response = await axios.put(url, data, { headers });
+    const response = await axios.put(url, data);
     return response.data;
   } catch (error) {
     return error.response?.data || { message: "Something went wrong!" };
   }
 };
 
-
 // Delete Method Api
-export const del = async (url, requiresAuth = false) => {
+export const del = async (url) => {
   try {
-    
-    const token = Cookies.get("token");
-    const headers = {};
-    if (requiresAuth && token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
+    const response = await axios.delete(url);
 
-    const response = await axios.delete(url, { headers });
-    
     return response.data;
   } catch (error) {
     return error.response?.data || { message: "Something went wrong!" };

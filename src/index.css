@@ -35,7 +35,9 @@ body {
   padding: 8px !important;
 }
 
-
+.table th, .table td {
+  text-align: start !important;
+}
 
 
 
