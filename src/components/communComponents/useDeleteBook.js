@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { del } from "../services/Api";
-import { deleteBook } from "../services/UrlService";
+import { del } from "../../services/Api";
+import { deleteBook } from "../../services/UrlService";
 import { toast } from "react-toastify";
 
 const useDeleteBook = (initialBooks) => {

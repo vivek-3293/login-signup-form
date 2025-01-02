@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
-import { post, get, put } from "../services/Api";
-import { getBookById, updateBook, userAddBook } from "../services/UrlService";
+import { post, get, put } from "../../services/Api";
+import { getBookById, updateBook, userAddBook } from "../../services/UrlService";
 import { useNavigate, useParams } from "react-router-dom";
 
 const AddBook = () => {
@@ -21,7 +21,6 @@ const AddBook = () => {
   const [isFormChanged, setIsFormChanged] = useState(false);
   const navigate = useNavigate();
 
-  // Get BookDetails to Book By Id => UpdateBook
   useEffect(() => {
     if (id) {
       const fetchBookDetails = async () => {
@@ -96,7 +95,6 @@ const AddBook = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // AddBook and Update Book API Call
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -130,7 +128,6 @@ const AddBook = () => {
     }
   };
 
-  // Cancle Button
   const handleCancel = () => {
     navigate("/");
   };

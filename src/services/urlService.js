@@ -66,6 +66,15 @@ export const getMemberById = (id) => {
   return apiClient(`/api/members/${id}`);
 };
 
+// =========== Borrow API ============
+
+export const borrowBook = () => {
+  return apiClient('/api/books/borrow')
+}
+
+export const borrowHistory = () => {
+  return apiClient('/api/books/borrowed')
+}
 
 
 

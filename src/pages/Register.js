@@ -27,7 +27,6 @@ const Register = () => {
   const location = useLocation();
   const isAddMember = location.state?.isAddMember || false;
 
-  // Validation Logic
   const validateForm = (name, value) => {
     let errors = "";
     if (name === "name" && !value.trim()) errors = "Name is required.";
@@ -59,7 +58,6 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate all fields
     const requiredFields = isAddMember
       ? ["name", "email", "password", "confirm_password", "role", "status"]
       : ["name", "email", "password", "confirm_password"];
@@ -120,7 +118,6 @@ const Register = () => {
               {isAddMember ? "Add Member" : "Sign Up"}
             </h2>
             <form onSubmit={handleSubmit}>
-              {/* Name */}
               <input
                 type="text"
                 className="form-control"
@@ -132,7 +129,6 @@ const Register = () => {
               />
               {errors.name && <p className="text-danger">{errors.name}</p>}
 
-              {/* Email */}
               <input
                 type="email"
                 className="form-control mt-3"
@@ -145,7 +141,7 @@ const Register = () => {
               {errors.email && <p className="text-danger">{errors.email}</p>}
 
               <input
-                type="text"
+                type="number"
                 className="form-control mt-3"
                 placeholder="Phone"
                 name="phone"
@@ -166,7 +162,6 @@ const Register = () => {
                 <p className="text-danger">{errors.address}</p>
               )}
 
-              {/* Password */}
               <div className="position-relative">
                 <input
                   type={passwordVisible ? "text" : "password"}
@@ -188,7 +183,6 @@ const Register = () => {
                 <p className="text-danger">{errors.password}</p>
               )}
 
-              {/* Confirm Password */}
               <input
                 type={passwordVisible ? "text" : "password"}
                 className="form-control mt-3"
@@ -202,7 +196,6 @@ const Register = () => {
                 <p className="text-danger">{errors.confirm_password}</p>
               )}
 
-              {/* Role and Status (Only for Add Member) */}
               {isAddMember && (
                 <>
                   <select
@@ -248,7 +241,6 @@ const Register = () => {
               </div>
             </form>
 
-            {/* Hide Links in Add Member */}
             {!isAddMember && (
               <p className="text-center mt-3">
                 Already have an account? <Link to="/login">Login</Link>

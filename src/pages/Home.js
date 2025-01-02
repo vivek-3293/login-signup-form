@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import BooksList from "../pages/BookList";
+import BooksList from "./admin/BookList";
 
 const Home = () => {
   const { auth } = useContext(AuthContext);

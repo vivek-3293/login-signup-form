@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
-import { get } from "../services/Api";
-import { userBooksList } from "../services/UrlService";
+import { get } from "../../services/Api";
+import { userBooksList } from "../../services/UrlService";
 import { Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import CardComponent from "../components/CardComponent";
-import DeleteModal from "../components/DeleteModal";
-import useDeleteBook from "../components/useDeleteBook";
+import { AuthContext } from "../../context/AuthContext";
+import CardComponent from "../../components/communComponents/CardComponent";
+import DeleteModal from "../../components/communComponents/DeleteModal";
+import useDeleteBook from "../../components/communComponents/useDeleteBook";
 
 const BooksList = () => {
   const navigate = useNavigate();
@@ -23,7 +23,6 @@ const BooksList = () => {
     handleCloseDeleteModal,
   } = useDeleteBook();
 
-  // Fetch the list of books
   useEffect(() => {
     async function fetchBooks() {
       const response = await get(userBooksList());
@@ -34,7 +33,6 @@ const BooksList = () => {
     fetchBooks();
   }, []);
 
-  // Add Book Handle
   const handleAddBook = () => {
     navigate("/admin");
   };
@@ -56,6 +54,7 @@ const BooksList = () => {
               <CardComponent
                 book={book}
                 isAdmin={isAdmin}
+                auth={auth}
                 onDelete={handleShowDeleteModal}
                 onUpdate={() => navigate(`/update-book/${book._id}`)}
               />

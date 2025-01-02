@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getMemberById } from "../services/UrlService";
-import { get } from "../services/Api";
+import { getMemberById } from "../../services/UrlService";
+import { get } from "../../services/Api";
 
 const SingleMember = () => {
   const { id } = useParams();
@@ -14,7 +14,7 @@ const SingleMember = () => {
   });
 
   useEffect(() => {
-    const fetchMember = async () => { 
+    const fetchMember = async () => {
       try {
         const response = await get(getMemberById(id));
         if (response?.member) {
@@ -51,10 +51,6 @@ const SingleMember = () => {
     );
   }
 
-//   if (!member) {
-//     return <div className="container mt-4">Loading...</div>;
-//   }
-
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">Member Details</h2>
@@ -77,7 +73,7 @@ const SingleMember = () => {
         <p>
           <strong>Status:</strong> {formData.status}
         </p>
-       
+
         <button
           onClick={() => navigate("/members")}
           className="btn btn-primary mt-3"

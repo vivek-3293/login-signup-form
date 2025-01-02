@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
-import { searchBooks } from "../services/UrlService";
+import { searchBooks } from "../../services/UrlService";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
-import { get } from "../services/Api";
-import CardComponent from "../components/CardComponent";
-import { AuthContext } from "../context/AuthContext";
-import DeleteModal from "../components/DeleteModal";
-import useDeleteBook from "../components/useDeleteBook";
+import { get } from "../../services/Api";
+import CardComponent from "../../components/communComponents/CardComponent";
+import { AuthContext } from "../../context/AuthContext";
+import DeleteModal from "../../components/communComponents/DeleteModal";
+import useDeleteBook from "../../components/communComponents/useDeleteBook";
 
 const SearchBook = () => {
   const { auth } = useContext(AuthContext);
