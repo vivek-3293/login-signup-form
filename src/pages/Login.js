@@ -66,7 +66,7 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await post(userLogin(), formData);
-      handleLogin(response.userDetail.role);
+      handleLogin(response.userDetail);
       toast.success("Login successful");
       navigate("/");
     } catch (error) {

@@ -28,8 +28,8 @@ export const userAddBook = () => {
   return apiClient("/api/books");
 };
 
-export const userBooksList = (page = 1) => {
-  return apiClient(`/api/books?page=${page}`);
+export const userBooksList = () => {
+  return apiClient('/api/books');
 };
 
 export const getBookById = (id) => {
@@ -74,6 +74,12 @@ export const borrowBook = () => {
 
 export const borrowHistory = () => {
   return apiClient('/api/books/borrowed')
+}
+export const returnBook= () => {
+  return apiClient('/api/books/return')
+}
+export const extendBorrowing  = () => {
+  return apiClient('/api/books/extend')
 }
 
 

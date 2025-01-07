@@ -4,7 +4,7 @@
 
 .table th,
 .table td {
-  text-align: center;
+  text-align: center !important;
 }
 
 .update-container {

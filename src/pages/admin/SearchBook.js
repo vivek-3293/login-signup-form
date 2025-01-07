@@ -1,5 +1,4 @@
-import React, { useContext, useEffect } from "react";
-import { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { searchBooks } from "../../services/UrlService";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -33,7 +32,6 @@ const SearchBook = () => {
         if (response.searchedBooks) {
           setBooks(response.searchedBooks);
         }
-        console.log("api res", response);
         console.log(books);
       } catch (error) {
         setError(error.response?.data?.message);
@@ -58,6 +56,7 @@ const SearchBook = () => {
               <CardComponent
                 book={book}
                 isAdmin={isAdmin}
+                auth={auth}
                 onDelete={handleShowDeleteModal}
                 onUpdate={() => navigate(`/update-book/${book._id}`)}
               />

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { put } from "../../services/Api";
 import { toast } from "react-toastify";
 import { updateMember } from "../../services/UrlService";
+import { useNavigate } from "react-router-dom";
+
 
 const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
   const [formData, setFormData] = useState({
@@ -12,15 +14,16 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
     status: "",
   });
   const [isFormChanged, setIsFormChanged] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (memberData) {
       setFormData({
-        name: memberData.name || "",
-        phone: String(memberData.phone) || "",
-        address: memberData.address || "",
-        role: memberData.role || "",
-        status: memberData.status || "",
+        name: memberData?.role?.name || "",
+        phone: String(memberData?.role?.phone) || "",
+        address: memberData?.role?.address || "",
+        role: memberData?.role?.role || "",
+        status: memberData?.role?.status || "",
       });
     }
   }, [memberData]);
@@ -32,7 +35,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
         ...prev,
         [name]: value,
       };
-      setIsFormChanged(JSON.stringify(updatedData) !== JSON.stringify(memberData));
+      setIsFormChanged(JSON.stringify(updatedData) !== JSON.stringify(formData));
       return updatedData;
     });
   };
@@ -40,12 +43,14 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await put(updateMember(memberData._id), formData);
+      const response = await put(updateMember(memberData?.role._id), formData);
+      
       toast.success(response?.message || "Profile updated successfully.");
-      onUpdateSuccess();
+      onUpdateSuccess?.(memberData);
       onClose();
+      navigate("/");
     } catch (error) {
-      toast.error("Error updating profile.");
+      toast.error(error?.message || "Error updating profile.");
     }
   };
 
@@ -73,7 +78,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
               <div className="mb-3">
                 <label className="form-label">Phone</label>
                 <input
-                  type=""
+                  type="number"
                   className="form-control"
                   name="phone"
                   value={formData.phone}
@@ -99,7 +104,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  disabled={memberData.role === "member"}
+                  disabled={memberData?.role?.role === "member"}
                 >
                   <option value="member">Member</option>
                   <option value="admin">Admin</option>
@@ -113,7 +118,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  disabled={memberData.role === "member"}
+                  disabled={memberData?.role?.role === "member"}
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Suspend</option>

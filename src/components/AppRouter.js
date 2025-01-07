@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, Routes, Route } from "react-router-dom";
+import { useLocation, Routes, Route, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -16,22 +16,61 @@ import AddBook from "../pages/admin/AddBook";
 import MemberList from "../pages/admin/MemberList ";
 import SingleBook from "../pages/admin/SingleBook";
 import SingleMember from "../pages/admin/SingleMember";
+import ProtectedRoute from "../pages/ProtectedRoute";
+import NotFound from "./communComponents/NotFound";
 
 function AppRoutes() {
   const location = useLocation();
 
-  const noNavbarRoutes = ["/login", "/signup", "/reset-password", "/book"];
+  const noNavbarRoutes = [
+    "/login",
+    "/signup",
+    "/reset-password",
+    "/book",
+    "/not-found",
+  ];
   const showNavbar = !noNavbarRoutes.includes(location.pathname);
 
   return (
     <>
       {showNavbar && <Navbar />}
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Register />} />
         <Route path="/" element={<Home />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/not-found" element={<NotFound />} />
+
+        <Route
+          path="/login"
+          element={
+            <ProtectedRoute isAuthRoute>
+              <Login />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <ProtectedRoute isAuthRoute>
+              <Register />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reset-password"
+          element={
+            <ProtectedRoute isAuthRoute>
+              <ResetPassword />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-dashboard"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/admin"
@@ -57,9 +96,11 @@ function AppRoutes() {
         <Route
           path="/members"
           element={
-            <AdminRoute>
-              <MemberList />
-            </AdminRoute>
+            <ProtectedRoute>
+              <AdminRoute>
+                <MemberList />
+              </AdminRoute>
+            </ProtectedRoute>
           }
         />
 
@@ -67,7 +108,17 @@ function AppRoutes() {
 
         {/* Borrow Routes */}
 
-        <Route path="/borrow-history" element={<BorrowHistory />} />
+        <Route
+          path="/borrow-history"
+          element={
+            <ProtectedRoute>
+              <BorrowHistory />
+            </ProtectedRoute>
+          }
+        />
+
+       {/* All route for 404 */}
+       <Route path="*" element={<Navigate to="/not-found" />} />
       </Routes>
       <ToastContainer />
     </>

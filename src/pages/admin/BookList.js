@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { get } from "../../services/Api";
 import { userBooksList } from "../../services/UrlService";
 import { Button, Row, Col } from "react-bootstrap";
@@ -11,7 +11,8 @@ import useDeleteBook from "../../components/communComponents/useDeleteBook";
 const BooksList = () => {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
-  const isAdmin = auth?.role === "admin";
+  const isAdmin = auth?.role?.role === "admin";
+  const [searchTerm, setSearchTerm] = useState("");
 
   const {
     books,
@@ -33,6 +34,16 @@ const BooksList = () => {
     fetchBooks();
   }, []);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${searchTerm}`);
+      setSearchTerm("");
+    } else {
+      navigate("/");
+    }
+  };
+
   const handleAddBook = () => {
     navigate("/admin");
   };
@@ -41,6 +52,18 @@ const BooksList = () => {
     <div className="container my-5">
       <h1 className="text-center mb-4">Books List</h1>
       <div className="d-flex justify-content-end my-3">
+        <form className="d-flex" onSubmit={handleSearch}>
+          <input
+            className="form-control w-100"
+            type="search"
+            placeholder="Search Books"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button className="btn btn-outline-success mx-2" type="submit">
+            Search
+          </button>
+        </form>
         {isAdmin && (
           <Button variant="success" onClick={handleAddBook}>
             Add Book

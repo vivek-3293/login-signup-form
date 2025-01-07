@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   const handleLogin = (role) => {
     setAuth({ role });
     localStorage.setItem("auth", JSON.stringify({ role }));
+
     navigate("/");
   };
 

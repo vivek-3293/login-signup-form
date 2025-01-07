@@ -1,44 +1,38 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { AuthContext } from "../../context/AuthContext"; 
+import { AuthContext } from "../../context/AuthContext";
 import ProfileUpdateModal from "./ProfileUpdateModal ";
 
 const Navbar = () => {
-  const { auth, handleLogout } = useContext(AuthContext); 
-  const [searchTerm, setSearchTerm] = useState(""); 
+  const { auth, handleLogout } = useContext(AuthContext);
+
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [selectedMember, setSelectedMember] = useState(null); 
-  const navigate = useNavigate(); 
+  const [selectedMember, setSelectedMember] = useState(null);
+  const navigate = useNavigate();
 
   const toggleProfileMenu = () => {
-    setIsProfileOpen(!isProfileOpen); 
+    setIsProfileOpen(!isProfileOpen);
   };
 
   const handleProfileClick = () => {
-    setShowUpdateModal(true); 
+    setShowUpdateModal(true);
     setSelectedMember(auth);
   };
 
   const handleCloseModal = () => {
-    setShowUpdateModal(false); 
-     setSelectedMember(null);
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      navigate(`/search?q=${searchTerm}`); 
-    }
+    setShowUpdateModal(false);
+    setSelectedMember(null);
+    setIsProfileOpen(false);
   };
 
   const handleLoginClick = () => {
-    navigate("/login"); 
+    navigate("/login");
   };
 
   const handleSignupClick = () => {
-    navigate("/signup"); 
+    navigate("/signup");
   };
 
   return (
@@ -53,14 +47,14 @@ const Navbar = () => {
                 Home
               </Link>
             </li>
-            {auth?.role === "member" && (
-            <li className="nav-item">
-              <Link className="nav-link" to="/borrow-history">
-                BorrowHistory
-              </Link>
-            </li>
-             )}
-            {auth?.role === "admin" && (
+            {auth?.role.role === "member" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/borrow-history">
+                  BorrowHistory
+                </Link>
+              </li>
+            )}
+            {auth?.role?.role === "admin" && (
               <li className="nav-item">
                 <Link className="nav-link" to="/admin-dashboard">
                   AdminDashboard
@@ -69,25 +63,12 @@ const Navbar = () => {
             )}
           </ul>
 
-          <form className="d-flex" onSubmit={handleSearch}>
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="Search Books"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)} 
-            />
-            <button className="btn btn-outline-success mx-1" type="submit">
-              Search
-            </button>
-          </form>
-
           {auth ? (
             <div className="d-flex align-items-center position-relative">
               <FaUserCircle
                 size={30}
                 className="cursor-pointer mx-2"
-                onClick={toggleProfileMenu} 
+                onClick={toggleProfileMenu}
               />
               {isProfileOpen && (
                 <div
@@ -106,7 +87,7 @@ const Navbar = () => {
                         className="btn btn-outline-primary text-center"
                         onClick={handleProfileClick}
                       >
-                       Update Profile
+                        Update Profile
                       </button>
                     </li>
                     <button
@@ -140,7 +121,7 @@ const Navbar = () => {
 
       {showUpdateModal && (
         <ProfileUpdateModal
-          memberData={selectedMember} 
+          memberData={selectedMember}
           onClose={handleCloseModal}
         />
       )}

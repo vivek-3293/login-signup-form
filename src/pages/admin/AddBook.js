@@ -2,7 +2,11 @@ import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import { post, get, put } from "../../services/Api";
-import { getBookById, updateBook, userAddBook } from "../../services/UrlService";
+import {
+  getBookById,
+  updateBook,
+  userAddBook,
+} from "../../services/UrlService";
 import { useNavigate, useParams } from "react-router-dom";
 
 const AddBook = () => {
@@ -106,10 +110,10 @@ const AddBook = () => {
     try {
       if (id) {
         const response = await put(updateBook(id), bookDetails);
-        toast.success(response?.data?.message, "Book Updated Successfully");
+        toast.success(response?.message, "Book updated successfully.");
       } else {
         const response = await post(userAddBook(), bookDetails);
-        toast.success(response?.data?.message, "Book Added Successfully");
+        toast.success(response?.message, "Book added successfully.");
       }
 
       setBookDetails({
@@ -138,15 +142,7 @@ const AddBook = () => {
       <form onSubmit={handleSubmit}>
         <table className="table table-bordered">
           <tbody>
-            {[
-              "title",
-              "authors",
-              "ISBN",
-              "category",
-              "publicationYear",
-              "totalCopies",
-              "shelfNumber",
-            ].map((field) => (
+            {Object.keys(bookDetails).map((field) => (
               <tr key={field}>
                 <th>{field.charAt(0).toUpperCase() + field.slice(1)}</th>
                 <td>

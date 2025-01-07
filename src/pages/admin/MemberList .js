@@ -24,8 +24,8 @@ const MemberList = () => {
     fetchMembers();
   }, []);
 
-  const handleUpdateMember = (member) => {
-    setSelectedMember(member);
+  const handleUpdateMember = () => {
+    setSelectedMember(auth);
     setShowUpdateModal(true);
   };
 
@@ -69,7 +69,7 @@ const MemberList = () => {
               <td>{member.address}</td>
               <td>{member.role}</td>
               <td>{member.status}</td>
-              {auth.role === "admin" && (
+              {auth.role?.role === "admin" && (
                 <td>
                   <button
                     onClick={() => handleUpdateMember(member)}
