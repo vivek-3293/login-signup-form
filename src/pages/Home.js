@@ -10,7 +10,7 @@ const Home = () => {
       <h1>Welcome to Home Page</h1>
       <p>
       You are logged in as {" "}
-        <b>{auth?.role === "admin" ? "Admin" : "Member"}</b> 
+        <b>{auth?.role?.role === "admin" ? "Admin" : "Member"}</b> 
       </p>
 
       {auth?.role === "admin" ? (

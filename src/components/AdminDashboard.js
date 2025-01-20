@@ -7,10 +7,15 @@ const AdminDashboard = () => {
       <h2>Admin Dashboard</h2>
 
       <Link className="nav-link" to="/members">
-        All Members
+        AllMembers
       </Link>
       
-      
+      <Link className="nav-link" to="/admin-history">
+        AllMemberBorrowHistory
+      </Link>
+      <Link className="nav-link" to="/overdue-history">
+        OverDueHistory
+      </Link>
     </div>
   );
 };

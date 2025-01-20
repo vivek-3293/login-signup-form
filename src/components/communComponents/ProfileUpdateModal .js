@@ -3,6 +3,8 @@ import { put } from "../../services/Api";
 import { toast } from "react-toastify";
 import { updateMember } from "../../services/UrlService";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 
 const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
@@ -15,6 +17,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
   });
   const [isFormChanged, setIsFormChanged] = useState(false);
   const navigate = useNavigate();
+  const { handleLogout } = useContext(AuthContext)
 
   useEffect(() => {
     if (memberData) {
@@ -44,11 +47,14 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
     e.preventDefault();
     try {
       const response = await put(updateMember(memberData?.role._id), formData);
+      if(response.code === "access_denied"){
+        handleLogout();
+      }
       
       toast.success(response?.message || "Profile updated successfully.");
       onUpdateSuccess?.(memberData);
       onClose();
-      navigate("/");
+      navigate("/members");
     } catch (error) {
       toast.error(error?.message || "Error updating profile.");
     }

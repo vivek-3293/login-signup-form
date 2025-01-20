@@ -29,7 +29,7 @@ export const userAddBook = () => {
 };
 
 export const userBooksList = () => {
-  return apiClient('/api/books');
+  return apiClient('/api/books/list');
 };
 
 export const getBookById = (id) => {
@@ -59,11 +59,15 @@ export const updateMember = (id) => {
 };
 
 export const getAllMembers = () => {
-  return apiClient("/api/members");
+  return apiClient("/api/members/list");
 };
 
-export const getMemberById = (id) => {
-  return apiClient(`/api/members/${id}`);
+export const getMemberById = (memberId) => {
+  return apiClient(`/api/members/${memberId}`);
+};
+
+export const adminToggle = () => {
+  return apiClient('/api/members/toggle-admin');
 };
 
 // =========== Borrow API ============
@@ -81,6 +85,15 @@ export const returnBook= () => {
 export const extendBorrowing  = () => {
   return apiClient('/api/books/extend')
 }
+
+export const AllBorrowHistory = () => {
+  return apiClient("/api/members/history")
+}
+
+export const AllOverDueHistory = () => {
+  return apiClient('/api/books/overdue');
+};
+
 
 
 

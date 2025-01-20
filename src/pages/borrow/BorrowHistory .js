@@ -14,7 +14,6 @@ const BorrowHistory = () => {
   const [error, setError] = useState(null);
   const { auth } = useContext(AuthContext);
 
-
   const fetchBorrowHistory = async () => {
     try {
       const response = await get(borrowHistory());
@@ -33,9 +32,8 @@ const BorrowHistory = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
-    
     fetchBorrowHistory();
   }, []);
 
@@ -45,7 +43,6 @@ const BorrowHistory = () => {
 
       toast.success(response.message || "Book Returned Successfully");
       await fetchBorrowHistory();
-
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to return the book");
     }
@@ -74,7 +71,7 @@ const BorrowHistory = () => {
     <div className="container mt-4">
       <h2>Borrow History</h2>
       {borrowAllHistory.length > 0 ? (
-        <table className="table table-bordered table-striped mt-3">
+        <table className="table table-bordered mt-3">
           <thead>
             <tr>
               <th>Sr.</th>
@@ -84,7 +81,7 @@ const BorrowHistory = () => {
               <th>Return Date</th>
               <th>Status</th>
               <th>Fine</th>
-              {auth?.role === "member" && <th>Action</th>}
+              {auth?.role?.role === "member" && <th>Action</th>}
             </tr>
           </thead>
           <tbody>

@@ -14,6 +14,7 @@ const SingleBook = () => {
     async function fetchBookDetails() {
       try {
         const response = await get(getBookById(id));
+        
         if (response.book) {
           setBook(response.book);
         }

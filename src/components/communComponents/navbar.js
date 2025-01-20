@@ -6,7 +6,7 @@ import ProfileUpdateModal from "./ProfileUpdateModal ";
 
 const Navbar = () => {
   const { auth, handleLogout } = useContext(AuthContext);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
@@ -16,6 +16,10 @@ const Navbar = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
+  const handleLogoutClick = () => {
+    handleLogout();
+    setIsProfileOpen(false);
+  }
   const handleProfileClick = () => {
     setShowUpdateModal(true);
     setSelectedMember(auth);
@@ -25,6 +29,16 @@ const Navbar = () => {
     setShowUpdateModal(false);
     setSelectedMember(null);
     setIsProfileOpen(false);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${searchTerm}`);
+      setSearchTerm("");
+    } else {
+      navigate("/");
+    }
   };
 
   const handleLoginClick = () => {
@@ -47,7 +61,7 @@ const Navbar = () => {
                 Home
               </Link>
             </li>
-            {auth?.role.role === "member" && (
+            {auth?.role?.role === "member" && (
               <li className="nav-item">
                 <Link className="nav-link" to="/borrow-history">
                   BorrowHistory
@@ -62,7 +76,18 @@ const Navbar = () => {
               </li>
             )}
           </ul>
-
+          <form className="d-flex" onSubmit={handleSearch}>
+            <input
+              className="form-control w-100"
+              type="search"
+              placeholder="Search Books"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button className="btn btn-outline-success mx-2" type="submit">
+              Search
+            </button>
+          </form>
           {auth ? (
             <div className="d-flex align-items-center position-relative">
               <FaUserCircle
@@ -92,7 +117,7 @@ const Navbar = () => {
                     </li>
                     <button
                       className="btn btn-outline-danger mt-4 text-center"
-                      onClick={handleLogout}
+                      onClick={handleLogoutClick}
                     >
                       Logout
                     </button>

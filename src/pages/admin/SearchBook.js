@@ -29,10 +29,10 @@ const SearchBook = () => {
     const fetchBooks = async () => {
       try {
         const response = await get(searchBooks(query));
-        if (response.searchedBooks) {
-          setBooks(response.searchedBooks);
+        
+        if (response.searchedBook) {
+          setBooks(response.searchedBook);
         }
-        console.log(books);
       } catch (error) {
         setError(error.response?.data?.message);
         toast.error(error.response?.data?.message);

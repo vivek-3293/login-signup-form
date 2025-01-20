@@ -1,5 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { post, get, put } from "../../services/Api";
 import {
@@ -10,7 +9,6 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 
 const AddBook = () => {
-  const { auth } = useContext(AuthContext);
   const { id } = useParams();
   const [bookDetails, setBookDetails] = useState({
     title: "",
@@ -110,9 +108,11 @@ const AddBook = () => {
     try {
       if (id) {
         const response = await put(updateBook(id), bookDetails);
+       
         toast.success(response?.message, "Book updated successfully.");
       } else {
         const response = await post(userAddBook(), bookDetails);
+        
         toast.success(response?.message, "Book added successfully.");
       }
 

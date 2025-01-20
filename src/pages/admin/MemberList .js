@@ -1,32 +1,82 @@
 import React, { useEffect, useState } from "react";
 import { AuthContext, useAuth } from "../../context/AuthContext";
-import { getAllMembers } from "../../services/UrlService";
-import { get } from "../../services/Api";
+import {
+  adminToggle,
+  getAllMembers,
+  getMemberById,
+} from "../../services/UrlService";
+import { get, patch, post, put } from "../../services/Api";
 import "../../styles/memberTable.css";
 import { useNavigate } from "react-router-dom";
 import ProfileUpdateModal from "../../components/communComponents/ProfileUpdateModal ";
+import { toast } from "react-toastify";
 
 const MemberList = () => {
   const { auth } = useAuth(AuthContext);
   const [members, setMembers] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [selectedMember, setSelectedMember] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const navigate = useNavigate();
 
   const fetchMembers = async () => {
-    const response = await get(getAllMembers());
-    if (response?.members) {
-      setMembers(response.members);
+    if (loading) return;
+    setLoading(true);
+
+    try {
+      const response = await post(getAllMembers(), {
+        page,
+        limit: 15,
+        search: "",
+      });
+
+      if (response?.members) {
+        setMembers((prevMembers) => [
+          ...prevMembers,
+          ...response.members.filter(
+            (newMember) =>
+              !prevMembers.some((member) => member._id === newMember._id)
+          ),
+        ]);
+        if (response.members.length < 15) {
+          setHasMore(false);
+        }
+      }
+    } catch (error) {
+      toast.error(error.response?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchMembers();
-  }, []);
+  }, [page]);
 
-  const handleUpdateMember = () => {
-    setSelectedMember(auth);
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+      document.documentElement.offsetHeight - 50
+    ) {
+      if (hasMore && !loading) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, loading]);
+
+  
+
+  const handleUpdateMember = (member) => {
+    setSelectedMember(member);
     setShowUpdateModal(true);
+    navigate("/members");
   };
 
   const handleCloseModal = () => {
@@ -36,6 +86,27 @@ const MemberList = () => {
 
   const handleAddMember = () => {
     navigate("/signup", { state: { isAddMember: true } });
+  };
+
+  const handleToggleRole = async (memberId, currentRole) => {
+    try {
+      const newRole = currentRole === "admin" ? "member" : "admin";
+      const response = await patch(adminToggle(), {
+        userId: memberId,
+        role: newRole,
+      });
+
+      if (response?.message) {
+        toast.success(response.message);
+        setMembers((prevMembers) =>
+          prevMembers.map((member) =>
+            member._id === memberId ? { ...member, role: newRole } : member
+          )
+        );
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update role");
+    }
   };
 
   return (
@@ -57,7 +128,8 @@ const MemberList = () => {
             <th>Address</th>
             <th>Role</th>
             <th>Status</th>
-            {auth.role === "admin" && <th>Actions</th>}
+            {auth.role?.role === "admin" && <th>Actions</th>}
+            {auth.role?.role === "admin" && <th>Admin Check</th>}
           </tr>
         </thead>
         <tbody>
@@ -79,10 +151,26 @@ const MemberList = () => {
                   </button>
                 </td>
               )}
+              {auth.role?.role === "admin" && (
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={member.role === "admin"}
+                    onChange={() => handleToggleRole(member._id, member.role)}
+                  />
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
       </table>
+
+      {loading && <p className="text-center">loading...</p>}
+      {!hasMore && (
+        <p className="text-center mt-4">
+          <b>All Member Are Loaded.</b>
+        </p>
+      )}
 
       {showUpdateModal && (
         <ProfileUpdateModal

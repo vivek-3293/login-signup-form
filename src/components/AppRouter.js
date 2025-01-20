@@ -8,7 +8,6 @@ import ResetPassword from "../pages/ResetPassword";
 import Navbar from "./communComponents/navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AdminRoute from "../components/communComponents/AdminRoute";
 import SearchBook from "../pages/admin/SearchBook";
 import AdminDashboard from "./AdminDashboard";
 import BorrowHistory from "../pages/borrow/BorrowHistory ";
@@ -18,6 +17,8 @@ import SingleBook from "../pages/admin/SingleBook";
 import SingleMember from "../pages/admin/SingleMember";
 import ProtectedRoute from "../pages/ProtectedRoute";
 import NotFound from "./communComponents/NotFound";
+import AdminBorrowHistory from "../pages/borrow/AdminBorrowHistory";
+import OverdueHistory from "../pages/borrow/OverdueHistory";
 
 function AppRoutes() {
   const location = useLocation();
@@ -75,17 +76,17 @@ function AppRoutes() {
         <Route
           path="/admin"
           element={
-            <AdminRoute>
+            <ProtectedRoute>
               <AddBook />
-            </AdminRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/update-book/:id"
           element={
-            <AdminRoute>
+            <ProtectedRoute>
               <AddBook />
-            </AdminRoute>
+            </ProtectedRoute>
           }
         />
 
@@ -97,14 +98,12 @@ function AppRoutes() {
           path="/members"
           element={
             <ProtectedRoute>
-              <AdminRoute>
                 <MemberList />
-              </AdminRoute>
             </ProtectedRoute>
           }
         />
 
-        <Route path="/member/:id" element={<SingleMember />} />
+        {/* <Route path="/member/:id" element={<SingleMember />} /> */}
 
         {/* Borrow Routes */}
 
@@ -117,8 +116,26 @@ function AppRoutes() {
           }
         />
 
-       {/* All route for 404 */}
-       <Route path="*" element={<Navigate to="/not-found" />} />
+        <Route
+          path="/admin-history"
+          element={
+            <ProtectedRoute>
+                <AdminBorrowHistory />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/overdue-history"
+          element={
+            <ProtectedRoute>
+                <OverdueHistory/>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* All route for 404 */}
+        <Route path="*" element={<Navigate to="/not-found" />} />
       </Routes>
       <ToastContainer />
     </>

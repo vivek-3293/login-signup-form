@@ -1,22 +1,21 @@
 import React, { useEffect, useContext, useState } from "react";
-import { get } from "../../services/Api";
+import { post } from "../../services/Api";
 import { userBooksList } from "../../services/UrlService";
-import { Button, Row, Col } from "react-bootstrap";
+import { Button, Row, Col, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import CardComponent from "../../components/communComponents/CardComponent";
 import DeleteModal from "../../components/communComponents/DeleteModal";
 import useDeleteBook from "../../components/communComponents/useDeleteBook";
+import { toast } from "react-toastify";
 
 const BooksList = () => {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   const isAdmin = auth?.role?.role === "admin";
-  const [searchTerm, setSearchTerm] = useState("");
+  const [books, setBooks] = useState([]);
 
-  const {
-    books,
-    setBooks,
+  const {    
     showDeleteModal,
     selectedBook,
     handleDelete,
@@ -24,46 +23,70 @@ const BooksList = () => {
     handleCloseDeleteModal,
   } = useDeleteBook();
 
-  useEffect(() => {
-    async function fetchBooks() {
-      const response = await get(userBooksList());
-      if (response.books) {
-        setBooks(response.books);
-      }
-    }
-    fetchBooks();
-  }, []);
+  const [page, setPage] = useState(1); 
+  const [loading, setLoading] = useState(false); 
+  const [hasMore, setHasMore] = useState(true); 
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      navigate(`/search?q=${searchTerm}`);
-      setSearchTerm("");
-    } else {
-      navigate("/");
-    }
-  };
+  useEffect(() => {
+    const fetchBooks = async () => {
+      if (loading) return;
+      setLoading(true);
+      try {
+        const response = await post(userBooksList(), {
+          page,
+          limit: 15,
+          search: "",
+        });
+        
+        if (response.books) {
+          setBooks((prevBooks) => {
+            const newBooks = response.books.filter(
+              (newBook) => !prevBooks.some((book) => book._id === newBook._id)
+            );
+            return [...prevBooks, ...newBooks];
+          });
+        
+          if (response.books.length < 15) setHasMore(false);
+        }
+      } catch (error) {
+        if (error.response?.status === 404) {
+          setHasMore(false); 
+        } else {
+          toast.error(error.response?.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+
+    fetchBooks();
+  }, [page]);
 
   const handleAddBook = () => {
     navigate("/admin");
   };
 
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+      document.documentElement.offsetHeight - 50
+    ) {
+      if (hasMore && !loading) {
+        setPage((prevPage) => prevPage + 1); 
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, loading]);
+
   return (
     <div className="container my-5">
       <h1 className="text-center mb-4">Books List</h1>
       <div className="d-flex justify-content-end my-3">
-        <form className="d-flex" onSubmit={handleSearch}>
-          <input
-            className="form-control w-100"
-            type="search"
-            placeholder="Search Books"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button className="btn btn-outline-success mx-2" type="submit">
-            Search
-          </button>
-        </form>
         {isAdmin && (
           <Button variant="success" onClick={handleAddBook}>
             Add Book
@@ -72,8 +95,8 @@ const BooksList = () => {
       </div>
       <Row xs={1} md={2} lg={3} className="g-4">
         {books.length > 0 ? (
-          books.map((book) => (
-            <Col key={book._id}>
+          books.map((book, index) => (
+            <Col key={`${book._id}-${index}`}>
               <CardComponent
                 book={book}
                 isAdmin={isAdmin}
@@ -89,6 +112,12 @@ const BooksList = () => {
           </div>
         )}
       </Row>
+      {loading && (
+        <div className="text-center my-4">
+          <Spinner animation="border" variant="primary" />
+        </div>
+      )}
+       {!hasMore  && <p className="text-center mt-4"><b>All Books Are Loaded.</b></p>}
       <DeleteModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
