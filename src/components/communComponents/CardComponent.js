@@ -14,10 +14,8 @@ const CardComponent = ({ book, isAdmin, auth, onDelete, onUpdate }) => {
       navigate("/login");
       return;
     }
-
     try {
       const response = await post(borrowBook(), { bookId: book._id });
-      
       toast.success(response.message);
     } catch (error) {
       toast.error(error?.message);
@@ -46,7 +44,6 @@ const CardComponent = ({ book, isAdmin, auth, onDelete, onUpdate }) => {
           <b>ISBN:</b> {book.ISBN} <br />
           <b>Category:</b> {book.category} <br />
           <b>Publication Year:</b> {book.publicationYear} <br />
-         
         </Card.Text>
       </Card.Body>
 
@@ -64,7 +61,7 @@ const CardComponent = ({ book, isAdmin, auth, onDelete, onUpdate }) => {
             </Button>
           </>
         )}
-        {(!isAdmin && (auth || !auth)) && (
+        {!isAdmin &&  (
           <Button variant="success" className="mx-1" onClick={handleBorrowBook}>
             Borrow Book
           </Button>

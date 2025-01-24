@@ -32,7 +32,7 @@ const OverdueHistory = () => {
       }
     } catch (error) {
       
-      toast.error(error.response?.data?.message || "No data found");
+      toast.error(error.response?.data?.message );
     } finally {
       setLoading(false);
     }

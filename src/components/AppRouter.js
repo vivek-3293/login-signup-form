@@ -14,7 +14,6 @@ import BorrowHistory from "../pages/borrow/BorrowHistory ";
 import AddBook from "../pages/admin/AddBook";
 import MemberList from "../pages/admin/MemberList ";
 import SingleBook from "../pages/admin/SingleBook";
-import SingleMember from "../pages/admin/SingleMember";
 import ProtectedRoute from "../pages/ProtectedRoute";
 import NotFound from "./communComponents/NotFound";
 import AdminBorrowHistory from "../pages/borrow/AdminBorrowHistory";
@@ -57,6 +56,15 @@ function AppRoutes() {
         />
 
         <Route
+          path="/add-member"
+          element={
+            <ProtectedRoute>
+              <Register />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/reset-password"
           element={
             <ProtectedRoute isAuthRoute>
@@ -67,7 +75,7 @@ function AppRoutes() {
         <Route
           path="/admin-dashboard"
           element={
-            <ProtectedRoute role="admin">
+            <ProtectedRoute>
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -98,12 +106,10 @@ function AppRoutes() {
           path="/members"
           element={
             <ProtectedRoute>
-                <MemberList />
+              <MemberList />
             </ProtectedRoute>
           }
         />
-
-        {/* <Route path="/member/:id" element={<SingleMember />} /> */}
 
         {/* Borrow Routes */}
 
@@ -120,7 +126,7 @@ function AppRoutes() {
           path="/admin-history"
           element={
             <ProtectedRoute>
-                <AdminBorrowHistory />
+              <AdminBorrowHistory />
             </ProtectedRoute>
           }
         />
@@ -129,7 +135,7 @@ function AppRoutes() {
           path="/overdue-history"
           element={
             <ProtectedRoute>
-                <OverdueHistory/>
+              <OverdueHistory />
             </ProtectedRoute>
           }
         />

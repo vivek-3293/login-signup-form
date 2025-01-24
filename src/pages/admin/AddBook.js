@@ -43,11 +43,9 @@ const AddBook = () => {
               totalCopies: book.totalCopies?.toString() || "",
               shelfNumber: book.shelfNumber || "",
             });
-          } else {
-            toast.error("Book details not found or invalid response format!");
           }
         } catch (error) {
-          toast.error("Failed to fetch book details. Please try again.");
+          toast.error(error?.message);
         }
       };
 
@@ -108,12 +106,12 @@ const AddBook = () => {
     try {
       if (id) {
         const response = await put(updateBook(id), bookDetails);
-       
-        toast.success(response?.message, "Book updated successfully.");
+
+        toast.success(response?.message);
       } else {
         const response = await post(userAddBook(), bookDetails);
-        
-        toast.success(response?.message, "Book added successfully.");
+
+        toast.success(response?.message);
       }
 
       setBookDetails({

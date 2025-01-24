@@ -4,11 +4,12 @@ import {
   adminToggle,
   getAllMembers,
   getMemberById,
+  updateMember,
 } from "../../services/UrlService";
 import { get, patch, post, put } from "../../services/Api";
 import "../../styles/memberTable.css";
 import { useNavigate } from "react-router-dom";
-import ProfileUpdateModal from "../../components/communComponents/ProfileUpdateModal ";
+// import ProfileUpdateModal from "../../components/communComponents/ProfileUpdateModal ";
 import { toast } from "react-toastify";
 
 const MemberList = () => {
@@ -71,12 +72,62 @@ const MemberList = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loading]);
 
-  
+  const fetchSingleMember = async (memberId) => {
+    try {
+      const response = await get(getMemberById(memberId));
 
-  const handleUpdateMember = (member) => {
-    setSelectedMember(member);
+      if (response?.member) {
+        setSelectedMember(response.member);
+        setShowUpdateModal(true);
+      } else {
+        toast.error(response?.message);
+      }
+    } catch (error) {
+      toast.error(error?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedMember) {
+      setMembers((prevMembers) =>
+        prevMembers.map((member) =>
+          member._id === selectedMember._id ? selectedMember : member
+        )
+      );
+    }
+  }, [selectedMember]);
+
+  const handleUpdateMember = async (e) => {
+    e.preventDefault();
+    try {
+      const { _id, email, membershipId, createdAt, ...updateData } =
+        selectedMember;
+      const response = await put(updateMember(_id), updateData);
+
+      if (response?.member) {
+        setSelectedMember(response.member);
+      }
+      toast.success(response?.message);
+      handleCloseModal();
+      navigate("/members");
+    } catch (error) {
+      toast.error(error?.message);
+    }
+  };
+
+  const fields = ["name", "email", "phone", "address", "role", "status"];
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedMember((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdateUser = (memberId) => {
+    fetchSingleMember(memberId);
     setShowUpdateModal(true);
-    navigate("/members");
   };
 
   const handleCloseModal = () => {
@@ -85,7 +136,7 @@ const MemberList = () => {
   };
 
   const handleAddMember = () => {
-    navigate("/signup", { state: { isAddMember: true } });
+    navigate("/add-member", { state: { isAddMember: true } });
   };
 
   const handleToggleRole = async (memberId, currentRole) => {
@@ -105,7 +156,7 @@ const MemberList = () => {
         );
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update role");
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -113,7 +164,7 @@ const MemberList = () => {
     <div className="container mt-4">
       <h2 className="text-center mb-4">Member List</h2>
 
-      {auth.role === "admin" && (
+      {auth.role?.role === "admin" && (
         <button onClick={handleAddMember} className="btn btn-primary my-3">
           Add Member
         </button>
@@ -144,10 +195,10 @@ const MemberList = () => {
               {auth.role?.role === "admin" && (
                 <td>
                   <button
-                    onClick={() => handleUpdateMember(member)}
+                    onClick={() => handleUpdateUser(member._id)}
                     className="btn btn-warning btn-sm me-2"
                   >
-                    Update
+                    Update User
                   </button>
                 </td>
               )}
@@ -172,13 +223,65 @@ const MemberList = () => {
         </p>
       )}
 
-      {showUpdateModal && (
+      {showUpdateModal && selectedMember && (
+        <div className="modal show d-block">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Update Member</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleCloseModal}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <form>
+                  {fields.map((field) => (
+                    <div className="mb-3" key={field}>
+                      <label className="form-label">
+                        {field.charAt(0).toUpperCase() + field.slice(1)}
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name={field}
+                        value={selectedMember[field] || ""}
+                        onChange={handleChange}
+                        disabled={field === "email"}
+                      />
+                    </div>
+                  ))}
+                </form>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleUpdateMember}
+                >
+                  Update
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseModal}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/*{showUpdateModal && selectedMember && (
         <ProfileUpdateModal
           memberData={selectedMember}
           onClose={handleCloseModal}
-          onUpdateSuccess={fetchMembers}
+          onUpdateSuccess={handleUpdateSuccess}
         />
-      )}
+      )} */}
     </div>
   );
 };

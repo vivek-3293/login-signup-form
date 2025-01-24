@@ -14,15 +14,13 @@ const SingleBook = () => {
     async function fetchBookDetails() {
       try {
         const response = await get(getBookById(id));
-        
+
         if (response.book) {
           setBook(response.book);
         }
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to fetch book details");
-        toast.error(
-          err.response?.data?.message || "Failed to fetch book details"
-        );
+        setError(err.response?.data?.message);
+        toast.error(err.response?.data?.message);
       }
     }
     fetchBookDetails();
@@ -61,7 +59,7 @@ const SingleBook = () => {
           </p>
           <button
             className="btn btn-primary mt-3"
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
           >
             Back to Books List
           </button>

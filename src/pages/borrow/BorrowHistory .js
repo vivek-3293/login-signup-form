@@ -25,9 +25,7 @@ const BorrowHistory = () => {
       setBorrowAllHistory(sortedHistory);
       setLoading(false);
     } catch (error) {
-      setError(
-        error.response?.data?.message || "Failed to fetch borrow history"
-      );
+      setError(error.response?.data?.message);
       toast.error(error.response?.data?.message);
       setLoading(false);
     }
@@ -41,10 +39,10 @@ const BorrowHistory = () => {
     try {
       const response = await post(returnBook(), { borrowId });
 
-      toast.success(response.message || "Book Returned Successfully");
+      toast.success(response.message);
       await fetchBorrowHistory();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to return the book");
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -52,20 +50,16 @@ const BorrowHistory = () => {
     try {
       const response = await post(extendBorrowing(), { borrowId });
 
-      toast.success(
-        response.message || "Borrowing period extended successfully"
-      );
+      toast.success(response.message);
 
       await fetchBorrowHistory();
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to extend borrowing period"
-      );
+      toast.error(error.response?.data?.message);
     }
   };
 
   if (error) return <p className="text-danger">{error}</p>;
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-center mt-3">Loading...</p>;
 
   return (
     <div className="container mt-4">

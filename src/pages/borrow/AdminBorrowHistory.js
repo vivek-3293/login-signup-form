@@ -40,9 +40,9 @@ const AdminBorrowHistory = () => {
       }
     } catch (error) {
       if (error.response?.status === 404) {
-        setHasMore(false); 
+        setHasMore(false);
       } else {
-      toast.error(error.response?.message || "Failed to fetch data");
+        toast.error(error.response?.message);
       }
     } finally {
       setLoading(false);
@@ -68,8 +68,6 @@ const AdminBorrowHistory = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loading]);
-
-  
 
   return (
     <div className="container mt-5">
@@ -135,7 +133,11 @@ const AdminBorrowHistory = () => {
         <p>No borrow history found.</p>
       )}
       {loading && <p className="text-center">loading...</p>}
-      {!hasMore  && <p className="text-center mt-4"><b>All Admin Borrow History Are Loaded.</b></p>}
+      {!hasMore && (
+        <p className="text-center mt-4">
+          <b>All Admin Borrow History Are Loaded.</b>
+        </p>
+      )}
     </div>
   );
 };

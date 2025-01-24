@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
@@ -12,14 +12,15 @@ const Navbar = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   const navigate = useNavigate();
 
-  const toggleProfileMenu = () => {
+  const toggleProfileMenu = (e) => {
+    e.stopPropagation();
     setIsProfileOpen(!isProfileOpen);
   };
 
   const handleLogoutClick = () => {
     handleLogout();
     setIsProfileOpen(false);
-  }
+  };
   const handleProfileClick = () => {
     setShowUpdateModal(true);
     setSelectedMember(auth);
@@ -48,6 +49,23 @@ const Navbar = () => {
   const handleSignupClick = () => {
     navigate("/signup");
   };
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (
+        !e.target.closest(".profile-menu") &&
+        !e.target.closest(".profile-icon")
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+    if (isProfileOpen) {
+      window.addEventListener("click", handleOutsideClick);
+    }
+    return () => {
+      window.removeEventListener("click", handleOutsideClick);
+    };
+  }, [isProfileOpen]);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">

@@ -121,7 +121,7 @@ const BooksList = () => {
       <DeleteModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
-        handleDelete={handleDelete}
+        handleDelete={(e) => handleDelete(e, setBooks, selectedBook)}
         book={selectedBook}
       />
     </div>

@@ -67,12 +67,11 @@ const Login = () => {
     try {
       const response = await post(userLogin(), formData);
       handleLogin(response.userDetail);
-      toast.success("Login successful");
+      toast.success(response?.message);
       navigate("/");
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Invalid email or password."
-      );
+      toast.error(error.response?.message);
+    } finally {
       setLoading(false);
     }
   };

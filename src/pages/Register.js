@@ -25,7 +25,7 @@ const Register = () => {
   const [isFormChanged, setIsFormChanged] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const isAddMember = location.state?.isAddMember || false;
+  const isAddMember = location.state?.isAddMember;
 
   const validateForm = (name, value) => {
     let errors = "";
@@ -88,7 +88,7 @@ const Register = () => {
 
       const response = await post(apiEndpoint, memberRegister);
       toast.success(
-        isAddMember ? "Member Added Successfully" : "Registration Successful"
+        isAddMember ? response?.message : response?.message
       );
 
       setIsFormChanged(false);

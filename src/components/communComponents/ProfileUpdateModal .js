@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
-
 const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -17,17 +16,19 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
   });
   const [isFormChanged, setIsFormChanged] = useState(false);
   const navigate = useNavigate();
-  const { handleLogout } = useContext(AuthContext)
+  const { handleLogout, auth } = useContext(AuthContext);
 
   useEffect(() => {
     if (memberData) {
       setFormData({
         name: memberData?.role?.name || "",
-        phone: String(memberData?.role?.phone) || "",
+        phone: memberData?.role?.phone || "",
         address: memberData?.role?.address || "",
         role: memberData?.role?.role || "",
         status: memberData?.role?.status || "",
       });
+
+      setIsFormChanged(false);
     }
   }, [memberData]);
 
@@ -38,7 +39,9 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
         ...prev,
         [name]: value,
       };
-      setIsFormChanged(JSON.stringify(updatedData) !== JSON.stringify(formData));
+      setIsFormChanged(
+        JSON.stringify(updatedData) !== JSON.stringify(formData)
+      );
       return updatedData;
     });
   };
@@ -47,14 +50,19 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
     e.preventDefault();
     try {
       const response = await put(updateMember(memberData?.role._id), formData);
-      if(response.code === "access_denied"){
+      if (response.code === "access_denied") {
         handleLogout();
       }
-      
-      toast.success(response?.message || "Profile updated successfully.");
+      toast.success(response?.message);
+      const updatedData = {
+        ...formData,
+      };
+      setFormData(updatedData);
+
       onUpdateSuccess?.(memberData);
+
+      navigate(auth?.role?.role === "admin" ? "/members" : "/");
       onClose();
-      navigate("/members");
     } catch (error) {
       toast.error(error?.message || "Error updating profile.");
     }
@@ -76,7 +84,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
                   type="text"
                   className="form-control"
                   name="name"
-                  value={formData.name}
+                  value={formData.name || ""}
                   onChange={handleChange}
                 />
               </div>
@@ -84,10 +92,10 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
               <div className="mb-3">
                 <label className="form-label">Phone</label>
                 <input
-                  type="number"
+                  type="tel"
                   className="form-control"
                   name="phone"
-                  value={formData.phone}
+                  value={formData.phone || ""}
                   onChange={handleChange}
                 />
               </div>
@@ -98,7 +106,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
                   type="text"
                   className="form-control"
                   name="address"
-                  value={formData.address}
+                  value={formData.address || ""}
                   onChange={handleChange}
                 />
               </div>
@@ -108,7 +116,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
                 <select
                   className="form-control"
                   name="role"
-                  value={formData.role}
+                  value={formData.role || "member"}
                   onChange={handleChange}
                   disabled={memberData?.role?.role === "member"}
                 >
@@ -122,7 +130,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
                 <select
                   className="form-control"
                   name="status"
-                  value={formData.status}
+                  value={formData.status || "active"}
                   onChange={handleChange}
                   disabled={memberData?.role?.role === "member"}
                 >

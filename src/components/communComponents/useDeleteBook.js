@@ -3,20 +3,23 @@ import { del } from "../../services/Api";
 import { deleteBook } from "../../services/UrlService";
 import { toast } from "react-toastify";
 
-const useDeleteBook = (initialBooks) => {
-  const [books, setBooks] = useState(initialBooks || []);
+const useDeleteBook = () => {
+  const [books, setBooks] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
 
-  const handleDelete = async () => {
+  const handleDelete = async (e, setBooks, selectedBook) => {
+    e.preventDefault();
     try {
-      await del(deleteBook(selectedBook._id));
-      toast.success("Book deleted successfully");
-      setBooks(books.filter((book) => book._id !== selectedBook._id));
+      const response = await del(deleteBook(selectedBook._id));
+      toast.success(response?.message);
+      setBooks((prevBooks) =>
+        prevBooks.filter((book) => book._id !== selectedBook._id)
+      );
       setShowDeleteModal(false);
       setSelectedBook(null);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to delete book");
+      toast.error(error.response?.data?.message);
       setShowDeleteModal(false);
     }
   };
