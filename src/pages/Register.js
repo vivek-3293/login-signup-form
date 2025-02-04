@@ -19,7 +19,7 @@ const Register = () => {
     status: "",
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const { handleLogin } = useContext(AuthContext);
+  const { handleUserData } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [isFormChanged, setIsFormChanged] = useState(false);
@@ -95,7 +95,7 @@ const Register = () => {
       if (isAddMember) {
         navigate("/members");
       } else {
-        handleLogin(response.userDetail.role);
+        handleUserData(response.userDetail.role);
         navigate("/");
       }
     } catch (error) {

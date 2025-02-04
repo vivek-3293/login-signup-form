@@ -12,7 +12,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const { handleLogin } = useContext(AuthContext);
+  const { handleUserData } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const validateForm = (name, value) => {
@@ -66,9 +66,14 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await post(userLogin(), formData);
-      handleLogin(response.userDetail);
-      toast.success(response?.message);
-      navigate("/");
+
+      if (response.userDetail) {
+        handleUserData(response.userDetail);
+        toast.success(response?.message);
+        navigate("/");
+      } else {
+        toast.error(response?.message);
+      }
     } catch (error) {
       toast.error(error.response?.message);
     } finally {
@@ -125,9 +130,7 @@ const Login = () => {
                   <div
                     className="spinner-border spinner-border-sm"
                     role="status"
-                  >
-                    <span className="sr-only">Loading...</span>
-                  </div>
+                  ></div>
                 ) : (
                   "Login"
                 )}

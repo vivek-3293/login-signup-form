@@ -16,16 +16,16 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
   });
   const [isFormChanged, setIsFormChanged] = useState(false);
   const navigate = useNavigate();
-  const { handleLogout, auth } = useContext(AuthContext);
+  const { handleLogout, auth, handleUserData } = useContext(AuthContext);
 
   useEffect(() => {
     if (memberData) {
       setFormData({
-        name: memberData?.role?.name || "",
-        phone: memberData?.role?.phone || "",
-        address: memberData?.role?.address || "",
-        role: memberData?.role?.role || "",
-        status: memberData?.role?.status || "",
+        name: memberData?.name || "",
+        phone: memberData?.phone || "",
+        address: memberData?.address || "",
+        role: memberData?.role || "",
+        status: memberData?.status || "",
       });
 
       setIsFormChanged(false);
@@ -34,32 +34,29 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      const updatedData = {
-        ...prev,
-        [name]: value,
-      };
-      setIsFormChanged(
-        JSON.stringify(updatedData) !== JSON.stringify(formData)
-      );
-      return updatedData;
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setIsFormChanged(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await put(updateMember(memberData?.role._id), formData);
+      const response = await put(updateMember(memberData._id), formData);
       if (response.code === "access_denied") {
         handleLogout();
       }
       toast.success(response?.message);
-      const updatedData = {
-        ...formData,
-      };
-      setFormData(updatedData);
 
-      onUpdateSuccess?.(memberData);
+      if (auth?.role?.role === "admin" && auth?.role?._id === memberData?._id) {
+        handleUserData(response.userDetail);
+      }
+
+      if (onUpdateSuccess) {
+        onUpdateSuccess(response.userDetail);
+      }
 
       navigate(auth?.role?.role === "admin" ? "/members" : "/");
       onClose();
@@ -118,7 +115,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
                   name="role"
                   value={formData.role || "member"}
                   onChange={handleChange}
-                  disabled={memberData?.role?.role === "member"}
+                  disabled={memberData?.role === "member"}
                 >
                   <option value="member">Member</option>
                   <option value="admin">Admin</option>
@@ -132,7 +129,7 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
                   name="status"
                   value={formData.status || "active"}
                   onChange={handleChange}
-                  disabled={memberData?.role?.role === "member"}
+                  disabled={memberData?.role === "member"}
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Suspend</option>

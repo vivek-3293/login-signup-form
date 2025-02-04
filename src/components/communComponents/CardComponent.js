@@ -24,6 +24,19 @@ const CardComponent = ({ book, isAdmin, auth, onDelete, onUpdate }) => {
 
   return (
     <Card className="h-100 shadow">
+      {/* <div style={{ height: "200px", overflow: "hidden" }}>
+        <video
+          width="100%"
+          height="100%"
+          autoPlay
+          loop
+          muted
+          style={{ objectFit: "cover" }}
+        >
+          <source src={book.video || "/images/vidio-1.mp4"} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div> */}
       <Card.Img
         variant="top"
         src={book.image || "/images/single-book-2.png"}
@@ -61,7 +74,7 @@ const CardComponent = ({ book, isAdmin, auth, onDelete, onUpdate }) => {
             </Button>
           </>
         )}
-        {!isAdmin &&  (
+        {!isAdmin && (
           <Button variant="success" className="mx-1" onClick={handleBorrowBook}>
             Borrow Book
           </Button>

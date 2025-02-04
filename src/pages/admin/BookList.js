@@ -15,7 +15,7 @@ const BooksList = () => {
   const isAdmin = auth?.role?.role === "admin";
   const [books, setBooks] = useState([]);
 
-  const {    
+  const {
     showDeleteModal,
     selectedBook,
     handleDelete,
@@ -23,43 +23,38 @@ const BooksList = () => {
     handleCloseDeleteModal,
   } = useDeleteBook();
 
-  const [page, setPage] = useState(1); 
-  const [loading, setLoading] = useState(false); 
-  const [hasMore, setHasMore] = useState(true); 
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchBooks = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    try {
+      const response = await post(userBooksList(), {
+        page,
+        limit: 15,
+        search: "",
+      });
+
+      if (response.books) {
+        setBooks((prevBooks) => {
+          const newBooks = response.books.filter(
+            (newBook) => !prevBooks.some((book) => book._id === newBook._id)
+          );
+          return [...prevBooks, ...newBooks];
+        });
+
+        if (response.books.length < 15) setHasMore(false);
+      }
+    } catch (error) {
+      toast.error(error.response?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      if (loading) return;
-      setLoading(true);
-      try {
-        const response = await post(userBooksList(), {
-          page,
-          limit: 15,
-          search: "",
-        });
-        
-        if (response.books) {
-          setBooks((prevBooks) => {
-            const newBooks = response.books.filter(
-              (newBook) => !prevBooks.some((book) => book._id === newBook._id)
-            );
-            return [...prevBooks, ...newBooks];
-          });
-        
-          if (response.books.length < 15) setHasMore(false);
-        }
-      } catch (error) {
-        if (error.response?.status === 404) {
-          setHasMore(false); 
-        } else {
-          toast.error(error.response?.message);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-
     fetchBooks();
   }, [page]);
 
@@ -73,7 +68,7 @@ const BooksList = () => {
       document.documentElement.offsetHeight - 50
     ) {
       if (hasMore && !loading) {
-        setPage((prevPage) => prevPage + 1); 
+        setPage((prevPage) => prevPage + 1);
       }
     }
   };
@@ -117,7 +112,7 @@ const BooksList = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       )}
-       {!hasMore  && <p className="text-center mt-4"><b>All Books Are Loaded.</b></p>}
+
       <DeleteModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}

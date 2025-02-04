@@ -19,7 +19,6 @@ export const userResetPassword = () => {
   return apiClient("/api/auth/reset-password");
 };
 
-
 // ========= Books API ==========
 export const userLogout = () => {
   return apiClient("/api/auth/logout");
@@ -29,7 +28,7 @@ export const userAddBook = () => {
 };
 
 export const userBooksList = () => {
-  return apiClient('/api/books/list');
+  return apiClient("/api/books/list");
 };
 
 export const getBookById = (id) => {
@@ -51,7 +50,7 @@ export const searchBooks = (query) => {
 // =========== Member API ============
 
 export const addMember = () => {
-  return apiClient('/api/members');
+  return apiClient("/api/members");
 };
 
 export const updateMember = (id) => {
@@ -67,37 +66,32 @@ export const getMemberById = (memberId) => {
 };
 
 export const adminToggle = () => {
-  return apiClient('/api/members/toggle-admin');
+  return apiClient("/api/members/toggle-admin");
 };
 
 // =========== Borrow API ============
 
 export const borrowBook = () => {
-  return apiClient('/api/books/borrow')
-}
-
-export const borrowHistory = () => {
-  return apiClient('/api/books/borrowed')
-}
-export const returnBook= () => {
-  return apiClient('/api/books/return')
-}
-export const extendBorrowing  = () => {
-  return apiClient('/api/books/extend')
-}
-
-export const AllBorrowHistory = () => {
-  return apiClient("/api/members/history")
-}
-
-export const AllOverDueHistory = () => {
-  return apiClient('/api/books/overdue');
+  return apiClient("/api/books/borrow");
 };
 
+export const borrowHistory = () => {
+  return apiClient("/api/books/borrowed");
+};
+export const returnBook = () => {
+  return apiClient("/api/books/return");
+};
+export const extendBorrowing = () => {
+  return apiClient("/api/books/extend");
+};
 
+export const AllBorrowHistory = () => {
+  return apiClient("/api/members/history");
+};
 
-
-
+export const AllOverDueHistory = () => {
+  return apiClient("/api/books/overdue");
+};
 
 // export const userLoginFormik = () => {
 //   return apiClient("/api/auth/login/custom-validation");

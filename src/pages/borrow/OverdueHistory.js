@@ -10,7 +10,7 @@ const OverdueHistory = () => {
   const [hasMore, setHasMore] = useState(true);
 
   const fetchOverdueHistory = async () => {
-    if (loading) return;
+    if (loading || !hasMore) return;
     setLoading(true);
 
     try {
@@ -31,8 +31,7 @@ const OverdueHistory = () => {
         setHasMore(false);
       }
     } catch (error) {
-      
-      toast.error(error.response?.data?.message );
+      toast.error(error.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -58,12 +57,9 @@ const OverdueHistory = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loading]);
 
-
-
   return (
     <div className="container mt-4">
       <h2>Overdue History (Admin Only)</h2>
-
       {overdueHistory.length > 0 ? (
         <table className="table table-bordered table-striped mt-3">
           <thead>
@@ -109,8 +105,8 @@ const OverdueHistory = () => {
         </table>
       ) : (
         <p>No overdue history found.</p>
-      )} {loading && <p className="text-center">loading...</p>}
-      {!hasMore  && <p className="text-center mt-4"><b>All Overdue History Are Loaded.</b></p>}
+      )}{" "}
+      {loading && <p className="text-center">loading...</p>}
     </div>
   );
 };

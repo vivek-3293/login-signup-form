@@ -10,6 +10,7 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
+  
   const navigate = useNavigate();
 
   const toggleProfileMenu = (e) => {
@@ -23,7 +24,7 @@ const Navbar = () => {
   };
   const handleProfileClick = () => {
     setShowUpdateModal(true);
-    setSelectedMember(auth);
+    setSelectedMember(auth.role);
   };
 
   const handleCloseModal = () => {

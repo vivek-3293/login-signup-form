@@ -10,7 +10,7 @@ const AdminBorrowHistory = () => {
   const [hasMore, setHasMore] = useState(true);
 
   const fetchAllBorrowHistory = async () => {
-    if (loading) return;
+    if (loading || !hasMore) return;
     setLoading(true);
 
     try {
@@ -22,6 +22,7 @@ const AdminBorrowHistory = () => {
 
       if (!response.history || response.history.length === 0) {
         setHasMore(false);
+        toast.error(response?.message);
         return;
       }
       const sortedHistory = (response.history || []).sort(
@@ -39,24 +40,9 @@ const AdminBorrowHistory = () => {
         setHasMore(false);
       }
     } catch (error) {
-      if (error.response?.status === 404) {
-        setHasMore(false);
-      } else {
-        toast.error(error.response?.message);
-      }
+      toast.error(error.response?.message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 50
-    ) {
-      if (hasMore && !loading) {
-        setPage((prev) => prev + 1);
-      }
     }
   };
 
@@ -65,8 +51,23 @@ const AdminBorrowHistory = () => {
   }, [page]);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 50
+      ) {
+        if (hasMore && !loading) {
+          setPage((prev) => prev + 1);
+        }
+      }
+    };
+    if (hasMore) {
+      window.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [hasMore, loading]);
 
   return (
@@ -133,11 +134,7 @@ const AdminBorrowHistory = () => {
         <p>No borrow history found.</p>
       )}
       {loading && <p className="text-center">loading...</p>}
-      {!hasMore && (
-        <p className="text-center mt-4">
-          <b>All Admin Borrow History Are Loaded.</b>
-        </p>
-      )}
+      
     </div>
   );
 };
