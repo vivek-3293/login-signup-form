@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { userLogout } from "../services/UrlService";
-import { post, setLogoutHandler } from "../services/Api";
+import { post } from "../services/Api";
 import Cookies from "js-cookie";
 export const AuthContext = createContext();
 
@@ -25,7 +25,9 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("auth");
     Cookies.remove("connect.sid");
     await post(userLogout());
-    navigate("/");
+    setTimeout(() => {
+      navigate("/");
+    }, 100);
   };
 
   return (

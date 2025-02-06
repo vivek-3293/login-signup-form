@@ -45,9 +45,9 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
     e.preventDefault();
     try {
       const response = await put(updateMember(memberData._id), formData);
-      if (response.code === "access_denied") {
-        handleLogout();
-      }
+      // if (response.code === "access_denied") {
+      //   handleLogout();
+      // }
       toast.success(response?.message);
 
       if (auth?.role?.role === "admin" && auth?.role?._id === memberData?._id) {

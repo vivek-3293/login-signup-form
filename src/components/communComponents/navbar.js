@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import ProfileUpdateModal from "./ProfileUpdateModal ";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const { auth, handleLogout } = useContext(AuthContext);
@@ -21,6 +22,7 @@ const Navbar = () => {
   const handleLogoutClick = () => {
     handleLogout();
     setIsProfileOpen(false);
+    toast.success("Logged out successfully!");
   };
   const handleProfileClick = () => {
     setShowUpdateModal(true);

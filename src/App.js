@@ -4,15 +4,24 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthProvider } from "./context/AuthContext";
 import AppRoutes from "./components/AppRouter";
 import "../src/index.css";
+import { ApiInterceptor } from "./services/Api";
+
+
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppRoutes />
+        <AppWithInterceptor />
       </AuthProvider>
     </Router>
   );
 }
+
+function AppWithInterceptor() {
+  ApiInterceptor();
+  return <AppRoutes />;
+}
+
 
 export default App;

@@ -16,7 +16,11 @@ const CardComponent = ({ book, isAdmin, auth, onDelete, onUpdate }) => {
     }
     try {
       const response = await post(borrowBook(), { bookId: book._id });
-      toast.success(response.message);
+      if (response?.code === "borrow_limit_reached") {
+        toast.error(response.message);
+      } else {
+        toast.success(response?.message);
+      }
     } catch (error) {
       toast.error(error?.message);
     }

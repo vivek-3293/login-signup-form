@@ -18,12 +18,9 @@ import ProtectedRoute from "../pages/ProtectedRoute";
 import NotFound from "./communComponents/NotFound";
 import AdminBorrowHistory from "../pages/borrow/AdminBorrowHistory";
 import OverdueHistory from "../pages/borrow/OverdueHistory";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 
 function AppRoutes() {
   const location = useLocation();
-  const { auth } = useContext(AuthContext);
 
   const noNavbarRoutes = [
     "/login",
