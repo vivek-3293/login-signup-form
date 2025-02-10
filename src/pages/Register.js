@@ -224,7 +224,7 @@ const Register = () => {
               <div className="d-flex my-4">
                 <button
                   type="submit"
-                  className="btn btn-primary me-2"
+                  className="btn btn-primary w-100 rounded-pill me-1"
                   disabled={!isFormChanged || loading}
                 >
                   {loading ? "Loading..." : isAddMember ? "Submit" : "Register"}

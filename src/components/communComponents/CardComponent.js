@@ -16,7 +16,7 @@ const CardComponent = ({ book, isAdmin, auth, onDelete, onUpdate }) => {
     }
     try {
       const response = await post(borrowBook(), { bookId: book._id });
-      if (response?.code === "borrow_limit_reached") {
+      if (response?.code) {
         toast.error(response.message);
       } else {
         toast.success(response?.message);
@@ -65,21 +65,21 @@ const CardComponent = ({ book, isAdmin, auth, onDelete, onUpdate }) => {
       </Card.Body>
 
       <Card.Footer>
-        <Button variant="primary" onClick={() => navigate(`/book/${book._id}`)}>
+        <Button variant="primary rounded-pill" onClick={() => navigate(`/book/${book._id}`)}>
           View
         </Button>
         {isAdmin && (
           <>
-            <Button variant="warning" className="mx-1" onClick={onUpdate}>
+            <Button variant="warning" className="mx-1 rounded-pill" onClick={onUpdate}>
               Update
             </Button>
-            <Button variant="danger" onClick={() => onDelete(book)}>
+            <Button variant="danger" className="rounded-pill" onClick={() => onDelete(book)}>
               Delete
             </Button>
           </>
         )}
         {!isAdmin && (
-          <Button variant="success" className="mx-1" onClick={handleBorrowBook}>
+          <Button variant="success" className="mx-1 rounded-pill" onClick={handleBorrowBook}>
             Borrow Book
           </Button>
         )}

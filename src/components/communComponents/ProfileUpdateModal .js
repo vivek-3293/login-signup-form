@@ -139,14 +139,14 @@ const ProfileUpdateModal = ({ memberData, onClose, onUpdateSuccess }) => {
               <div className="d-flex justify-content-between">
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn btn-primary rounded-pill"
                   disabled={!isFormChanged}
                 >
                   Update
                 </button>
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-secondary rounded-pill"
                   onClick={onClose}
                 >
                   Cancel

@@ -18,11 +18,12 @@ const BorrowHistory = () => {
     try {
       const response = await get(borrowHistory());
 
-      const sortedHistory = (response.history || []).sort((a, b) => {
+      const sortedHistory = (response || []).sort((a, b) => {
         return new Date(b.dueDate) - new Date(a.dueDate);
       });
 
       setBorrowAllHistory(sortedHistory);
+
       setLoading(false);
     } catch (error) {
       setError(error.response?.data?.message);
@@ -42,7 +43,7 @@ const BorrowHistory = () => {
       toast.success(response.message);
       await fetchBorrowHistory();
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      toast.error(error?.message);
     }
   };
 
@@ -114,14 +115,14 @@ const BorrowHistory = () => {
                     {item.status !== "returned" && (
                       <>
                         <button
-                          className="btn btn-danger btn-sm me-1"
+                          className="btn btn-danger btn-sm me-1 rounded-pill"
                           onClick={() => handleReturnBook(item._id)}
                         >
                           Return Book
                         </button>
 
                         <button
-                          className="btn btn-primary btn-sm"
+                          className="btn btn-primary btn-sm rounded-pill"
                           onClick={() => handleExtendBorrowing(item._id)}
                         >
                           Extend Period

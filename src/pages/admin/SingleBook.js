@@ -58,7 +58,7 @@ const SingleBook = () => {
             <b>Shelf Number:</b> {book.shelfNumber}
           </p>
           <button
-            className="btn btn-primary mt-3"
+            className="btn btn-primary mt-3 rounded-pill"
             onClick={() => navigate("/")}
           >
             Back to Books List

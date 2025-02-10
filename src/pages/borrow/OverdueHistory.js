@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { post } from "../../services/Api";
 import { toast } from "react-toastify";
 import { AllOverDueHistory } from "../../services/UrlService";
@@ -8,6 +8,7 @@ const OverdueHistory = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const limit = 15;
 
   const fetchOverdueHistory = async () => {
     if (loading || !hasMore) return;
@@ -16,9 +17,15 @@ const OverdueHistory = () => {
     try {
       const response = await post(AllOverDueHistory(), {
         page,
-        limit: 15,
+        limit,
         search: "",
       });
+
+      if (!response.history || response.history.length === 0) {
+        setHasMore(false);
+        toast.error(response?.message);
+        return;
+      }
 
       setOverdueHistory((prev) => {
         const newDueHistory = (response.history || []).filter(
@@ -27,7 +34,7 @@ const OverdueHistory = () => {
         return [...prev, ...newDueHistory];
       });
 
-      if (response.history.length < 15) {
+      if (response.history.length < limit) {
         setHasMore(false);
       }
     } catch (error) {
@@ -37,25 +44,34 @@ const OverdueHistory = () => {
     }
   };
 
-  const handleScroll = () => {
+  useEffect(() => {
+    fetchOverdueHistory();
+  }, [page]);
+
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 50
+      document.documentElement.offsetHeight - 100
     ) {
       if (hasMore && !loading) {
         setPage((prev) => prev + 1);
       }
     }
-  };
-
-  useEffect(() => {
-    fetchOverdueHistory();
-  }, [page]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMore, loading]);
+
+  useEffect(() => {
+    let timeout;
+    const handleScrollWithOverdue = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(handleScroll, 200);
+    };
+
+    window.addEventListener("scroll", handleScrollWithOverdue);
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("scroll", handleScrollWithOverdue);
+    };
+  }, [handleScroll]);
 
   return (
     <div className="container mt-4">

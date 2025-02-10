@@ -125,7 +125,7 @@ const Login = () => {
                 <p className="text-danger">{errors.password}</p>
               )}
 
-              <button type="submit" className="btn btn-primary w-100 mt-4">
+              <button type="submit" className="btn btn-primary w-100 mt-4 rounded-pill">
                 {loading ? (
                   <div
                     className="spinner-border spinner-border-sm"
@@ -141,7 +141,7 @@ const Login = () => {
               Don't have an account? <Link to="/signup">Register</Link>
             </p>
             <p className="text-center">
-              <Link to="/reset-password">Forgot Password?</Link>
+              <Link to={`/reset-password?email=${formData.email}`}>Forgot Password?</Link>
             </p>
           </div>
         </div>

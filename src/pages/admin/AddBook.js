@@ -163,14 +163,14 @@ const AddBook = () => {
         <div className="text-center">
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary rounded-pill"
             disabled={!isFormChanged}
           >
             {id ? "Update Book" : "Add Book"}
           </button>
           <button
             type="button"
-            className="btn btn-secondary mx-3"
+            className="btn btn-secondary mx-3 rounded-pill"
             onClick={handleCancel}
           >
             Cancel

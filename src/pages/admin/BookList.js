@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 import { post } from "../../services/Api";
 import { userBooksList } from "../../services/UrlService";
 import { Button, Row, Col, Spinner } from "react-bootstrap";
@@ -26,6 +26,7 @@ const BooksList = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const limit = 15;
 
   const fetchBooks = async () => {
     if (loading || !hasMore) return;
@@ -33,7 +34,7 @@ const BooksList = () => {
     try {
       const response = await post(userBooksList(), {
         page,
-        limit: 15,
+        limit,
         search: "",
       });
 
@@ -45,7 +46,9 @@ const BooksList = () => {
           return [...prevBooks, ...newBooks];
         });
 
-        if (response.books.length < 15) setHasMore(false);
+        if (response.books.length < limit) {
+          setHasMore(false);
+        }
       }
     } catch (error) {
       toast.error(error.response?.message);
@@ -62,28 +65,36 @@ const BooksList = () => {
     navigate("/admin");
   };
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 50
+      document.documentElement.offsetHeight - 100
     ) {
       if (hasMore && !loading) {
         setPage((prevPage) => prevPage + 1);
       }
     }
-  };
+  }, [hasMore, loading]);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, loading]);
+    let timeout;
+    const handleScrollWithBookList = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(handleScroll, 200);
+    };
+    window.addEventListener("scroll", handleScrollWithBookList);
+    return () => {
+      setTimeout(timeout);
+      window.removeEventListener("scroll", handleScrollWithBookList);
+    };
+  }, [handleScroll]);
 
   return (
     <div className="container my-5">
       <h1 className="text-center mb-4">Books List</h1>
       <div className="d-flex justify-content-end my-3">
         {isAdmin && (
-          <Button variant="success" onClick={handleAddBook}>
+          <Button variant="success rounded-pill" onClick={handleAddBook}>
             Add Book
           </Button>
         )}

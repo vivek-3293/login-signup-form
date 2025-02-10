@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { AuthContext, useAuth } from "../../context/AuthContext";
 import { adminToggle, getAllMembers } from "../../services/UrlService";
 import { patch, post } from "../../services/Api";
@@ -16,6 +16,7 @@ const MemberList = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const navigate = useNavigate();
+  const limit = 15;
 
   const fetchMembers = async () => {
     if (loading || !hasMore) return;
@@ -24,7 +25,7 @@ const MemberList = () => {
     try {
       const response = await post(getAllMembers(), {
         page,
-        limit: 15,
+        limit,
         search: "",
       });
 
@@ -36,7 +37,7 @@ const MemberList = () => {
               !prevMembers.some((member) => member._id === newMember._id)
           ),
         ]);
-        if (response.members.length < 15) {
+        if (response.members.length < limit) {
           setHasMore(false);
         }
       }
@@ -51,21 +52,29 @@ const MemberList = () => {
     fetchMembers();
   }, [page]);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
-      document.documentElement.offsetHeight - 50
+      document.documentElement.offsetHeight - 100
     ) {
       if (hasMore && !loading) {
         setPage((prevPage) => prevPage + 1);
       }
     }
-  };
+  }, [hasMore, loading]);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, loading]);
+    let timeout;
+    const handleScrollWithMemberList = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(handleScroll, 200);
+    };
+    window.addEventListener("scroll", handleScrollWithMemberList);
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("scroll", handleScrollWithMemberList);
+    };
+  }, [handleScroll]);
 
   const handleUpdateUser = (member) => {
     setSelectedMember(member);
@@ -115,7 +124,7 @@ const MemberList = () => {
       <h2 className="text-center mb-4">Member List</h2>
 
       {auth.role?.role === "admin" && (
-        <button onClick={handleAddMember} className="btn btn-primary my-3">
+        <button onClick={handleAddMember} className="btn btn-primary my-3 rounded-pill">
           Add Member
         </button>
       )}
@@ -146,7 +155,7 @@ const MemberList = () => {
                 <td>
                   <button
                     onClick={() => handleUpdateUser(member)}
-                    className="btn btn-warning btn-sm me-2"
+                    className="btn btn-warning btn-sm me-2 p-2 rounded-pill"
                   >
                     Update User
                   </button>

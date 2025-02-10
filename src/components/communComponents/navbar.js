@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import ProfileUpdateModal from "./ProfileUpdateModal ";
-import { toast } from "react-toastify";
 
 const Navbar = () => {
   const { auth, handleLogout } = useContext(AuthContext);
@@ -22,7 +21,6 @@ const Navbar = () => {
   const handleLogoutClick = () => {
     handleLogout();
     setIsProfileOpen(false);
-    toast.success("Logged out successfully!");
   };
   const handleProfileClick = () => {
     setShowUpdateModal(true);
@@ -71,7 +69,7 @@ const Navbar = () => {
   }, [isProfileOpen]);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div className="container">
         <h4 className="mx-3">Library System</h4>
 
@@ -105,7 +103,7 @@ const Navbar = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="btn btn-outline-success mx-2" type="submit">
+            <button className="btn btn-outline-success mx-2 rounded-pill" type="submit">
               Search
             </button>
           </form>
@@ -130,14 +128,14 @@ const Navbar = () => {
                   <ul className="navbar-nav d-flex flex-column my-2">
                     <li className="nav-item">
                       <button
-                        className="btn btn-outline-primary text-center"
+                        className="btn btn-outline-primary px-4 text-center rounded-pill"
                         onClick={handleProfileClick}
                       >
                         Update Profile
                       </button>
                     </li>
                     <button
-                      className="btn btn-outline-danger mt-4 text-center"
+                      className="btn btn-outline-danger mt-4 text-center rounded-pill"
                       onClick={handleLogoutClick}
                     >
                       Logout
@@ -149,13 +147,13 @@ const Navbar = () => {
           ) : (
             <>
               <button
-                className="btn btn-outline-success mx-1"
+                className="btn btn-outline-success mx-1 rounded-pill"
                 onClick={handleLoginClick}
               >
                 Login
               </button>
               <button
-                className="btn btn-outline-success mx-1"
+                className="btn btn-outline-success mx-1 rounded-pill"
                 onClick={handleSignupClick}
               >
                 Signup

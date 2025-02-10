@@ -26,7 +26,6 @@ function AppRoutes() {
     "/login",
     "/signup",
     "/reset-password",
-    "/book",
     "/not-found",
   ];
   const showNavbar = !noNavbarRoutes.includes(location.pathname);

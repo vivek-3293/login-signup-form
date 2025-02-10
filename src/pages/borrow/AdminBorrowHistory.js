@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { post } from "../../services/Api";
 import { toast } from "react-toastify";
 import { AllBorrowHistory } from "../../services/UrlService";
@@ -8,6 +8,7 @@ const AdminBorrowHistory = () => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const limit = 15;
 
   const fetchAllBorrowHistory = async () => {
     if (loading || !hasMore) return;
@@ -16,7 +17,7 @@ const AdminBorrowHistory = () => {
     try {
       const response = await post(AllBorrowHistory(), {
         page,
-        limit: 15,
+        limit,
         search: "",
       });
 
@@ -36,7 +37,7 @@ const AdminBorrowHistory = () => {
         return [...prev, ...newHistory];
       });
 
-      if (response.history.length < 15) {
+      if (response.history.length < limit) {
         setHasMore(false);
       }
     } catch (error) {
@@ -50,25 +51,30 @@ const AdminBorrowHistory = () => {
     fetchAllBorrowHistory();
   }, [page]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 50
-      ) {
-        if (hasMore && !loading) {
-          setPage((prev) => prev + 1);
-        }
+  const handleScroll = useCallback(() => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+      document.documentElement.offsetHeight - 100
+    ) {
+      if (hasMore && !loading) {
+        setPage((prev) => prev + 1);
       }
-    };
-    if (hasMore) {
-      window.addEventListener("scroll", handleScroll);
     }
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, [hasMore, loading]);
+
+  useEffect(() => {
+    let timeout;
+    const debouncedHandleScroll = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(handleScroll, 200);
+    };
+
+    window.addEventListener("scroll", debouncedHandleScroll);
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("scroll", debouncedHandleScroll);
+    };
+  }, [handleScroll]);
 
   return (
     <div className="container mt-5">
@@ -134,7 +140,6 @@ const AdminBorrowHistory = () => {
         <p>No borrow history found.</p>
       )}
       {loading && <p className="text-center">loading...</p>}
-      
     </div>
   );
 };
