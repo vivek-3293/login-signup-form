@@ -47,6 +47,16 @@ export const searchBooks = (query) => {
   return apiClient(`/api/books/search?q=${query}`);
 };
 
+export const importBooksCsv = () => {
+  return apiClient('/api/books/import');
+};
+export const exportBooksCsv = () => {
+  return apiClient('/api/books/export');
+};
+export const exportDownloadFile = (jobId) => {
+  return apiClient(`/api/queue/export/${jobId}/download`);
+};
+
 // =========== Member API ============
 
 export const addMember = () => {

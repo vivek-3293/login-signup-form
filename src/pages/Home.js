@@ -7,11 +7,17 @@ const Home = () => {
 
   return (
     <>
-      <div className="container text-center mt-5">
-        <h1>Welcome to Home Page</h1>
+      <div className="container text-center pt-5 mt-8rem">
+        <h2>Welcome to Home Page</h2>
         <p>
           You are logged in as{" "}
-          <b>{auth?.role?.role === "admin" ? "Admin" : auth?.role?.role === "member" ? "member" : ""}</b>
+          <b>
+            {auth?.role?.role === "admin"
+              ? "Admin"
+              : auth?.role?.role === "member"
+              ? "member"
+              : ""}
+          </b>
         </p>
 
         <BooksList />

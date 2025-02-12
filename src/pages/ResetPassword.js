@@ -99,7 +99,7 @@ const ResetPassword = () => {
                   >
                   </div>
                 ) : (
-                  "Reset Password"
+                  "Next"
                 )}
               </button>
             </form>

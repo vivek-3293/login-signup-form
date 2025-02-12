@@ -10,7 +10,8 @@ const Navbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
-  
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const toggleProfileMenu = (e) => {
@@ -73,7 +74,14 @@ const Navbar = () => {
       <div className="container">
         <h4 className="mx-3">Library System</h4>
 
-        <div className="collapse navbar-collapse">
+        <button
+          className="navbar-toggler"
+          type="button"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
               <Link className="nav-link" to="/">
@@ -95,71 +103,77 @@ const Navbar = () => {
               </li>
             )}
           </ul>
-          <form className="d-flex" onSubmit={handleSearch}>
+          <form
+            className="d-flex justify-content-center mb-2 mb-lg-0"
+            onSubmit={handleSearch}
+          >
             <input
-              className="form-control w-100"
+              className="form-control w-50"
               type="search"
               placeholder="Search Books"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="btn btn-outline-success mx-2 rounded-pill" type="submit">
+            <button
+              className="btn btn-outline-success mx-2 rounded-pill"
+              type="submit"
+            >
               Search
             </button>
-          </form>
-          {auth ? (
-            <div className="d-flex align-items-center position-relative">
-              <FaUserCircle
-                size={30}
-                className="cursor-pointer mx-2"
-                onClick={toggleProfileMenu}
-              />
-              {isProfileOpen && (
-                <div
-                  className="position-absolute bg-white shadow rounded"
-                  style={{
-                    top: "42px",
-                    right: "0",
-                    zIndex: "1000",
-                    minWidth: "175px",
-                    padding: "10px",
-                  }}
-                >
-                  <ul className="navbar-nav d-flex flex-column my-2">
-                    <li className="nav-item">
+            {auth ? (
+              <div className="d-flex align-items-center position-relative">
+                <FaUserCircle
+                  size={30}
+                  className="cursor-pointer mx-2"
+                  onClick={toggleProfileMenu}
+                />
+                {isProfileOpen && (
+                  <div
+                    className="profile position-absolute bg-white shadow rounded"
+                    style={{
+                      top: "42px",
+                      right: "0",
+                      zIndex: "1000",
+                      minWidth: "175px",
+                      padding: "10px",
+                    }}
+                  >
+                    <ul className="navbar-nav d-flex flex-column my-2">
+                      <li className="nav-item">
+                        <button
+                          className="btn btn-outline-primary px-4 text-center rounded-pill"
+                          onClick={handleProfileClick}
+                        >
+                          Update Profile
+                        </button>
+                      </li>
                       <button
-                        className="btn btn-outline-primary px-4 text-center rounded-pill"
-                        onClick={handleProfileClick}
+                        className="btn btn-outline-danger mt-4 text-center rounded-pill"
+                        onClick={handleLogoutClick}
                       >
-                        Update Profile
+                        Logout
                       </button>
-                    </li>
-                    <button
-                      className="btn btn-outline-danger mt-4 text-center rounded-pill"
-                      onClick={handleLogoutClick}
-                    >
-                      Logout
-                    </button>
-                  </ul>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <button
-                className="btn btn-outline-success mx-1 rounded-pill"
-                onClick={handleLoginClick}
-              >
-                Login
-              </button>
-              <button
-                className="btn btn-outline-success mx-1 rounded-pill"
-                onClick={handleSignupClick}
-              >
-                Signup
-              </button>
-            </>
-          )}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <button
+                  className="btn btn-outline-success mx-1 rounded-pill"
+                  onClick={handleLoginClick}
+                >
+                  Login
+                </button>
+                <button
+                  className="btn btn-outline-success mx-1 rounded-pill"
+                  onClick={handleSignupClick}
+                >
+                  Signup
+                </button>
+              </>
+            )}
+          </form>
         </div>
       </div>
 
