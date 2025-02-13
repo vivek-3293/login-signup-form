@@ -50,7 +50,7 @@ const ExportAndDownloadBooks = () => {
           variant="warning"
           onClick={handleExportAndDownload}
           disabled={exporting}
-          className="mt-1 ms-2 rounded-pill"
+          className="mt-1 ms-2 p-2 rounded-pill"
         >
           {exporting ? "Exporting..." : "Export & Download Books"}
         </Button>

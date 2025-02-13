@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState, useCallback } from "react";
 import { post } from "../../services/Api";
-import { importBooksCsv, userBooksList } from "../../services/UrlService";
+import { userBooksList } from "../../services/UrlService";
 import { Button, Row, Col, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -9,13 +9,13 @@ import DeleteModal from "../../components/communComponents/DeleteModal";
 import useDeleteBook from "../../components/communComponents/useDeleteBook";
 import { toast } from "react-toastify";
 import ExportAndDownloadBooks from "../../components/communComponents/ExportAndDownloadBooks";
+import ImportBooks from "../../components/communComponents/ImportBooks";
 
 const BooksList = () => {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   const isAdmin = auth?.role?.role === "admin";
   const [books, setBooks] = useState([]);
-  const [csvFile, setCsvFile] = useState(null);
 
   const {
     showDeleteModal,
@@ -67,32 +67,6 @@ const BooksList = () => {
     navigate("/admin");
   };
 
-  const handleCsvUpload = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("file", csvFile);
-    try {
-      const response = await post(importBooksCsv(), formData);
-
-      if (
-        response?.code === "Validation_Error" &&
-        Array.isArray(response.errors)
-      ) {
-        toast.error(response.errors[0]?.error);
-      } else if (response?.code) {
-        toast.error(response?.message);
-      } else {
-        toast.success(response?.message);
-      }
-      setBooks([]);
-      setPage(1);
-      fetchBooks();
-    } catch (errors) {
-      toast.error(errors.response.message);
-    }
-  };
-
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop >=
@@ -123,33 +97,24 @@ const BooksList = () => {
       <div className="d-flex justify-content-between my-3">
         {isAdmin && (
           <>
-            <Button
-              variant="success"
-              className="rounded-pill"
-              onClick={handleAddBook}
-            >
-              Add Book
-            </Button>
-
-            <form className=" d-flex" onSubmit={handleCsvUpload}>
-              <div className="me-3">
-                {" "}
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={(e) => setCsvFile(e.target.files[0])}
-                  className="form-control ms-768"
-                />
-              </div>
+            <div>
               <Button
-                type="submit"
-                variant="primary"
-                className="mt-1 rounded-pill"
+                variant="success"
+                className="p-2 rounded-pill"
+                onClick={handleAddBook}
               >
-                Upload CSV
+                Add Book
               </Button>
-            <ExportAndDownloadBooks />
-            </form>
+            </div>
+
+            <div className="d-flex">
+              <ImportBooks
+                setBooks={setBooks}
+                setPage={setPage}
+                fetchBooks={fetchBooks}
+              />
+              <ExportAndDownloadBooks />
+            </div>
           </>
         )}
       </div>
