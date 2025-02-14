@@ -3,7 +3,7 @@ import { Button, Modal, Spinner } from "react-bootstrap";
 import { post } from "../../services/Api";
 import { importBooksCsv } from "../../services/UrlService";
 
-const ImportBooks = ({ setBooks, setPage, fetchBooks }) => {
+const ImportBooks = ({ fetchBooks }) => {
   const fileInputRef = useRef(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [modalType, setModalType] = useState("success");
@@ -35,12 +35,10 @@ const ImportBooks = ({ setBooks, setPage, fetchBooks }) => {
       } else {
         setSuccessMessage(response?.message);
         setModalType("success");
-        setBooks([]);
-        setPage(1);
         fetchBooks();
-      }
+      } 
     } catch (error) {
-      setErrors([{ error: error.response?.data?.message }]);
+      setErrors(error.response?.message);
       setModalType("error");
     } finally {
       setLoading(false);

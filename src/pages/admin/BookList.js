@@ -10,12 +10,14 @@ import useDeleteBook from "../../components/communComponents/useDeleteBook";
 import { toast } from "react-toastify";
 import ExportAndDownloadBooks from "../../components/communComponents/ExportAndDownloadBooks";
 import ImportBooks from "../../components/communComponents/ImportBooks";
+import { FaArrowUp } from "react-icons/fa";
 
 const BooksList = () => {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   const isAdmin = auth?.role?.role === "admin";
   const [books, setBooks] = useState([]);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   const {
     showDeleteModal,
@@ -76,6 +78,8 @@ const BooksList = () => {
         setPage((prevPage) => prevPage + 1);
       }
     }
+
+    setShowScrollToTop(window.scrollY > 300);
   }, [hasMore, loading]);
 
   useEffect(() => {
@@ -90,6 +94,10 @@ const BooksList = () => {
       window.removeEventListener("scroll", handleScrollWithBookList);
     };
   }, [handleScroll]);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="container my-5">
@@ -108,11 +116,7 @@ const BooksList = () => {
             </div>
 
             <div className="d-flex">
-              <ImportBooks
-                setBooks={setBooks}
-                setPage={setPage}
-                fetchBooks={fetchBooks}
-              />
+              <ImportBooks fetchBooks={fetchBooks} />
               <ExportAndDownloadBooks />
             </div>
           </>
@@ -138,7 +142,7 @@ const BooksList = () => {
         )}
       </Row>
       {loading && (
-        <div className="text-center my-4">
+        <div className="text-center mt-2">
           <Spinner animation="border" variant="primary" />
         </div>
       )}
@@ -149,6 +153,14 @@ const BooksList = () => {
         handleDelete={(e) => handleDelete(e, setBooks, selectedBook)}
         book={selectedBook}
       />
+
+      {showScrollToTop && (
+        <FaArrowUp
+          onClick={scrollToTop}
+          variant="primary"
+          className="scroll-to-top"
+        />
+      )}
     </div>
   );
 };
