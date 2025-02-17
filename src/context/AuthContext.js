@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { userLogout } from "../services/UrlService";
-import { post } from "../services/Api";
+import { userLogout } from "../services/urlService";
+import { post } from "../services/api";
 import Cookies from "js-cookie";
 export const AuthContext = createContext();
 

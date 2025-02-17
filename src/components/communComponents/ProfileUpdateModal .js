@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { put } from "../../services/Api";
+import { put } from "../../services/api";
 import { toast } from "react-toastify";
-import { updateMember } from "../../services/UrlService";
+import { updateMember } from "../../services/urlService";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";

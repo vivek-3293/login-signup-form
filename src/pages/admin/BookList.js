@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState, useCallback } from "react";
-import { post } from "../../services/Api";
-import { userBooksList } from "../../services/UrlService";
+import { post } from "../../services/api";
+import { userBooksList } from "../../services/urlService";
 import { Button, Row, Col, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";

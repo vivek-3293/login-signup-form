@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Helmet } from "react-helmet";
-import { post } from "../services/Api";
-import { userLogin } from "../services/UrlService";
+import { post } from "../services/api";
+import { userLogin } from "../services/urlService";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });

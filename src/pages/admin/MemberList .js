@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { AuthContext, useAuth } from "../../context/AuthContext";
-import { adminToggle, getAllMembers } from "../../services/UrlService";
-import { patch, post } from "../../services/Api";
+import { adminToggle, getAllMembers } from "../../services/urlService";
+import { patch, post } from "../../services/api";
 import "../../styles/memberTable.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { post } from "../../services/Api";
+import { post } from "../../services/api";
 import { toast } from "react-toastify";
-import { AllOverDueHistory } from "../../services/UrlService";
+import { AllOverDueHistory } from "../../services/urlService";
 
 const OverdueHistory = () => {
   const [overdueHistory, setOverdueHistory] = useState([]);

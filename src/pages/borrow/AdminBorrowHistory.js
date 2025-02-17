@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { post } from "../../services/Api";
+import { post } from "../../services/api";
 import { toast } from "react-toastify";
-import { AllBorrowHistory } from "../../services/UrlService";
+import { AllBorrowHistory } from "../../services/urlService";
 
 const AdminBorrowHistory = () => {
   const [borrowAllHistory, setBorrowAllHistory] = useState([]);

@@ -50,6 +50,9 @@ export const searchBooks = (query) => {
 export const importBooksCsv = () => {
   return apiClient('/api/books/import');
 };
+export const getImportStatus = (jobId) => {
+  return apiClient(`/api/queue/import/${jobId}/status`);
+};
 export const exportBooksCsv = () => {
   return apiClient('/api/books/export');
 };

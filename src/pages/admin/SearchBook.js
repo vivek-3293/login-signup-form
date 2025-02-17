@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { searchBooks } from "../../services/UrlService";
+import { searchBooks } from "../../services/urlService";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
-import { get } from "../../services/Api";
+import { get } from "../../services/api";
 import CardComponent from "../../components/communComponents/CardComponent";
 import { AuthContext } from "../../context/AuthContext";
 import DeleteModal from "../../components/communComponents/DeleteModal";

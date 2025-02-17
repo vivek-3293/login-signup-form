@@ -4,8 +4,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import { AuthContext } from "../context/AuthContext";
-import { post } from "../services/Api";
-import { addMember, userRegister } from "../services/UrlService";
+import { post } from "../services/api";
+import { addMember, userRegister } from "../services/urlService";
 
 const Register = () => {
   const [formData, setFormData] = useState({

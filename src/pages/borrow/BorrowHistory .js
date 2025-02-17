@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { get, post } from "../../services/Api";
+import { get, post } from "../../services/api";
 import { toast } from "react-toastify";
 import {
   borrowHistory,
   extendBorrowing,
   returnBook,
-} from "../../services/UrlService";
+} from "../../services/urlService";
 import { AuthContext } from "../../context/AuthContext";
 
 const BorrowHistory = () => {

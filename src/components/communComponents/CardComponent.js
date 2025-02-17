@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { post } from "../../services/Api";
-import { borrowBook } from "../../services/UrlService";
+import { post } from "../../services/api";
+import { borrowBook } from "../../services/urlService";
 import { toast } from "react-toastify";
 
 const CardComponent = ({ book, isAdmin, auth, onDelete, onUpdate }) => {

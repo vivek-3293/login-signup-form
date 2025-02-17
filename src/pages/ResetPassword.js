@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import { post } from "../services/Api";
-import { userResetPassword } from "../services/UrlService";
+import { post } from "../services/api";
+import { userResetPassword } from "../services/urlService";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 

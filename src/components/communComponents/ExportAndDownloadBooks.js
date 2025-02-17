@@ -3,8 +3,8 @@ import React from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useState } from "react";
-import { exportBooksCsv, exportDownloadFile } from "../../services/UrlService";
-import { post } from "../../services/Api";
+import { exportBooksCsv, exportDownloadFile } from "../../services/urlService";
+import { post } from "../../services/api";
 import { toast } from "react-toastify";
 
 const ExportAndDownloadBooks = () => {

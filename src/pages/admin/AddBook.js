@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { post, get, put } from "../../services/Api";
+import { post, get, put } from "../../services/api";
 import {
   getBookById,
   updateBook,
   userAddBook,
-} from "../../services/UrlService";
+} from "../../services/urlService";
 import { useNavigate, useParams } from "react-router-dom";
 
 const AddBook = () => {

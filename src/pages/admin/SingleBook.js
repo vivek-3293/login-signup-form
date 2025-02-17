@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { get } from "../../services/Api";
+import { get } from "../../services/api";
 import { toast } from "react-toastify";
-import { getBookById } from "../../services/UrlService";
+import { getBookById } from "../../services/urlService";
 
 const SingleBook = () => {
   const { id } = useParams();
