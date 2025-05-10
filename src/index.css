@@ -2,6 +2,17 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
+  padding-top: 60px;
+}
+
+.scroll-to-top {
+  width: 50px;
+  height: 50px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: blue;
+  cursor: pointer;
 }
 
 .form-box {
@@ -10,23 +21,88 @@ body {
   background-color: #f8f9fa;
 }
 
-.pass-icon{
+.pass-icon {
   position: absolute;
   top: 12%;
   right: 2%;
   cursor: pointer;
 }
-.pass-icon-signup{
+.pass-icon-signup {
   position: absolute;
   top: 12%;
   right: 2%;
   cursor: pointer;
 }
-.spinner-border{
+.spinner-border {
   width: 24px;
   height: 24px;
   border-width: 2px;
 }
-.text-danger{
+.text-danger {
   margin: 0;
+}
+
+.card-footer {
+  padding: 8px !important;
+}
+
+
+
+
+/* =========== Media Responsive ============ */
+@media (max-width: 768px) {
+  .navbar-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+  .mt-8rem {
+    margin-top: 8rem;
+  }
+  .profile {
+    top: 55px !important;
+    left: -50px !important;
+  }
+  .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+    min-width: 150px;
+  }
+  .ms-768 {
+    margin-left: 10px;
+  }
+}
+
+@media (max-width: 991px) {
+  .mt-8rem {
+    margin-top: 8rem;
+  }
+  .profile {
+    top: 55px !important;
+    left: -50px !important;
+  }
+  .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+    min-width: 150px;
+  }
+
+  .ms-768 {
+    margin-left: 10px;
+  }
+}
+@media (max-width: 1024px) {
+  .mt-8rem {
+    margin-top: 8rem;
+  }
+  .profile {
+    top: 55px !important;
+  }
+  .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+    min-width: 150px;
+  }
+  .ms-768 {
+    margin-left: 10px;
+  }
 }

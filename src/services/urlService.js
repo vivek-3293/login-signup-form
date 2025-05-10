@@ -7,20 +7,108 @@ export const apiClient = (endPoint) => {
 
 // ALL API URL
 
-export const userSignup = () => {
-  return apiClient("/api/auth/registration/custom-validation");
+export const userRegister = () => {
+  return apiClient("/api/auth/register");
 };
 
 export const userLogin = () => {
-  return apiClient("/api/auth/login/custom-validation");
+  return apiClient("/api/auth/login");
 };
 
+export const userResetPassword = () => {
+  return apiClient("/api/auth/reset-password");
+};
+
+// ========= Books API ==========
 export const userLogout = () => {
   return apiClient("/api/auth/logout");
 };
-export const userLoginFormik = () => {
-  return apiClient("/api/auth/login/custom-validation");
+export const userAddBook = () => {
+  return apiClient("/api/books");
 };
-export const userSignupFormik = () => {
-  return apiClient("/api/auth/registration/custom-validation");
+
+export const userBooksList = () => {
+  return apiClient("/api/books/list");
 };
+
+export const getBookById = (id) => {
+  return apiClient(`/api/books/${id}`);
+};
+
+export const updateBook = (id) => {
+  return apiClient(`/api/books/${id}`);
+};
+
+export const deleteBook = (id) => {
+  return apiClient(`/api/books/${id}`);
+};
+
+export const searchBooks = (query) => {
+  return apiClient(`/api/books/search?q=${query}`);
+};
+
+export const importBooksCsv = () => {
+  return apiClient('/api/books/import');
+};
+export const getImportStatus = (jobId) => {
+  return apiClient(`/api/queue/import/${jobId}/status`);
+};
+export const exportBooksCsv = () => {
+  return apiClient('/api/books/export');
+};
+export const exportDownloadFile = (jobId) => {
+  return apiClient(`/api/queue/export/${jobId}/download`);
+};
+
+// =========== Member API ============
+
+export const addMember = () => {
+  return apiClient("/api/members");
+};
+
+export const updateMember = (id) => {
+  return apiClient(`/api/members/${id}`);
+};
+
+export const getAllMembers = () => {
+  return apiClient("/api/members/list");
+};
+
+export const getMemberById = (memberId) => {
+  return apiClient(`/api/members/${memberId}`);
+};
+
+export const adminToggle = () => {
+  return apiClient("/api/members/toggle-admin");
+};
+
+// =========== Borrow API ============
+
+export const borrowBook = () => {
+  return apiClient("/api/books/borrow");
+};
+
+export const borrowHistory = () => {
+  return apiClient("/api/books/borrowed");
+};
+export const returnBook = () => {
+  return apiClient("/api/books/return");
+};
+export const extendBorrowing = () => {
+  return apiClient("/api/books/extend");
+};
+
+export const AllBorrowHistory = () => {
+  return apiClient("/api/members/history");
+};
+
+export const AllOverDueHistory = () => {
+  return apiClient("/api/books/overdue");
+};
+
+// export const userLoginFormik = () => {
+//   return apiClient("/api/auth/login/custom-validation");
+// };
+// export const userSignupFormik = () => {
+//   return apiClient("/api/auth/registration/custom-validation");
+// };
