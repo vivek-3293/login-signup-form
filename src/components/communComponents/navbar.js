@@ -1,0 +1,190 @@
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
+import { AuthContext } from "../../context/AuthContext";
+import ProfileUpdateModal from "./ProfileUpdateModal ";
+
+const Navbar = () => {
+  const { auth, handleLogout } = useContext(AuthContext);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const toggleProfileMenu = (e) => {
+    e.stopPropagation();
+    setIsProfileOpen(!isProfileOpen);
+  };
+
+  const handleLogoutClick = () => {
+    handleLogout();
+    setIsProfileOpen(false);
+  };
+  const handleProfileClick = () => {
+    setShowUpdateModal(true);
+    setSelectedMember(auth.role);
+  };
+
+  const handleCloseModal = () => {
+    setShowUpdateModal(false);
+    setSelectedMember(null);
+    setIsProfileOpen(false);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${searchTerm}`);
+      setSearchTerm("");
+    } else {
+      navigate("/");
+    }
+  };
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
+  const handleSignupClick = () => {
+    navigate("/signup");
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (
+        !e.target.closest(".profile-menu") &&
+        !e.target.closest(".profile-icon")
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+    if (isProfileOpen) {
+      window.addEventListener("click", handleOutsideClick);
+    }
+    return () => {
+      window.removeEventListener("click", handleOutsideClick);
+    };
+  }, [isProfileOpen]);
+
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <div className="container">
+        <h4 className="mx-3">Library System</h4>
+
+        <button
+          className="navbar-toggler"
+          type="button"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/">
+                Home
+              </Link>
+            </li>
+            {auth?.role?.role === "member" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/borrow-history">
+                  BorrowHistory
+                </Link>
+              </li>
+            )}
+            {auth?.role?.role === "admin" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin-dashboard">
+                  AdminDashboard
+                </Link>
+              </li>
+            )}
+          </ul>
+          <form
+            className="d-flex justify-content-center mb-2 mb-lg-0"
+            onSubmit={handleSearch}
+          >
+            <input
+              className="form-control w-50"
+              type="search"
+              placeholder="Search Books"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              className="btn btn-outline-success mx-2 rounded-pill"
+              type="submit"
+            >
+              Search
+            </button>
+            {auth ? (
+              <div className="d-flex align-items-center position-relative">
+                <FaUserCircle
+                  size={30}
+                  className="cursor-pointer mx-2"
+                  onClick={toggleProfileMenu}
+                />
+                {isProfileOpen && (
+                  <div
+                    className="profile position-absolute bg-white shadow rounded"
+                    style={{
+                      top: "42px",
+                      right: "0",
+                      zIndex: "1000",
+                      minWidth: "175px",
+                      padding: "10px",
+                    }}
+                  >
+                    <ul className="navbar-nav d-flex flex-column my-2">
+                      <li className="nav-item">
+                        <button
+                          className="btn btn-outline-primary px-4 text-center rounded-pill"
+                          onClick={handleProfileClick}
+                        >
+                          Update Profile
+                        </button>
+                      </li>
+                      <button
+                        className="btn btn-outline-danger mt-4 text-center rounded-pill"
+                        onClick={handleLogoutClick}
+                      >
+                        Logout
+                      </button>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <button
+                  className="btn btn-outline-success mx-1 rounded-pill"
+                  onClick={handleLoginClick}
+                >
+                  Login
+                </button>
+                <button
+                  className="btn btn-outline-success mx-1 rounded-pill"
+                  onClick={handleSignupClick}
+                >
+                  Signup
+                </button>
+              </>
+            )}
+          </form>
+        </div>
+      </div>
+
+      {showUpdateModal && (
+        <ProfileUpdateModal
+          memberData={selectedMember}
+          onClose={handleCloseModal}
+        />
+      )}
+    </nav>
+  );
+};
+
+export default Navbar;
